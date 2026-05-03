@@ -1,0 +1,1500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ellium Labs — Your Trusted Technology Partner</title>
+  <meta name="description" content="Ellium Labs specializes in Odoo ERP solutions, software development, and IT consulting. Empowering businesses through intelligent technology." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-deep:    #030b18;
+      --bg-surface: #070f20;
+      --bg-card:    #0b1529;
+      --bg-card2:   #0f1c35;
+      --accent:     oklch(62% 0.20 232);
+      --accent2:    oklch(62% 0.18 188);
+      --accent-glow: oklch(62% 0.20 232 / 0.35);
+      --accent2-glow: oklch(62% 0.18 188 / 0.35);
+      --text:       #e6eeff;
+      --text-muted: #7a8daa;
+      --text-dim:   #4a5c78;
+      --border:     rgba(100,140,255,0.10);
+      --border-bright: rgba(100,140,255,0.22);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg-deep);
+      color: var(--text);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    h1,h2,h3,h4,h5 { font-family: 'Outfit', sans-serif; }
+
+    ::selection { background: var(--accent); color: #fff; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg-deep); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+
+    /* Canvas */
+    #hero-canvas {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      pointer-events: none; z-index: 0;
+    }
+
+    /* Utility */
+    .section-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 11px; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--accent);
+      background: oklch(62% 0.20 232 / 0.10);
+      border: 1px solid oklch(62% 0.20 232 / 0.25);
+      padding: 6px 14px; border-radius: 100px;
+    }
+    .section-tag::before {
+      content: ''; display: block; width: 6px; height: 6px;
+      border-radius: 50%; background: var(--accent);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.7); }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(32px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; } to { opacity: 1; }
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+
+    .reveal {
+      opacity: 0; transform: translateY(40px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1; transform: translateY(0);
+    }
+
+    /* Pop-up child animations */
+    .pop-children > * {
+      opacity: 0;
+      transform: translateY(36px) scale(0.96);
+      transition: opacity 0.55s cubic-bezier(0.34,1.56,0.64,1),
+                  transform 0.55s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .pop-children.visible > * {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+    /* stagger delays 1–12 */
+    .pop-children.visible > *:nth-child(1)  { transition-delay: 0.00s; }
+    .pop-children.visible > *:nth-child(2)  { transition-delay: 0.08s; }
+    .pop-children.visible > *:nth-child(3)  { transition-delay: 0.16s; }
+    .pop-children.visible > *:nth-child(4)  { transition-delay: 0.24s; }
+    .pop-children.visible > *:nth-child(5)  { transition-delay: 0.32s; }
+    .pop-children.visible > *:nth-child(6)  { transition-delay: 0.40s; }
+    .pop-children.visible > *:nth-child(7)  { transition-delay: 0.48s; }
+    .pop-children.visible > *:nth-child(8)  { transition-delay: 0.56s; }
+    .pop-children.visible > *:nth-child(9)  { transition-delay: 0.64s; }
+    .pop-children.visible > *:nth-child(10) { transition-delay: 0.72s; }
+    .pop-children.visible > *:nth-child(11) { transition-delay: 0.80s; }
+    .pop-children.visible > *:nth-child(12) { transition-delay: 0.88s; }
+
+    /* slide-in from left / right for about section */
+    .slide-left {
+      opacity: 0; transform: translateX(-48px);
+      transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1);
+    }
+    .slide-right {
+      opacity: 0; transform: translateX(48px);
+      transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1);
+      transition-delay: 0.12s;
+    }
+    .slide-left.visible, .slide-right.visible {
+      opacity: 1; transform: translateX(0);
+    }
+
+    /* count-up number flash */
+    @keyframes countFlash {
+      0% { opacity: 0; transform: translateY(12px) scale(0.8); }
+      60% { opacity: 1; transform: translateY(-3px) scale(1.06); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .stat.popped .stat-num {
+      animation: countFlash 0.55s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+    .stat.popped:nth-child(1) .stat-num { animation-delay: 0.00s; }
+    .stat.popped:nth-child(2) .stat-num { animation-delay: 0.10s; }
+    .stat.popped:nth-child(3) .stat-num { animation-delay: 0.20s; }
+    .stat.popped:nth-child(4) .stat-num { animation-delay: 0.30s; }
+
+    /* section header word-by-word */
+    .section-header.reveal h2 .word {
+      display: inline-block;
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.34,1.36,0.64,1);
+    }
+    .section-header.reveal.visible h2 .word { opacity: 1; transform: translateY(0); }
+    .section-header.reveal.visible h2 .word:nth-child(1) { transition-delay: 0.05s; }
+    .section-header.reveal.visible h2 .word:nth-child(2) { transition-delay: 0.12s; }
+    .section-header.reveal.visible h2 .word:nth-child(3) { transition-delay: 0.19s; }
+    .section-header.reveal.visible h2 .word:nth-child(4) { transition-delay: 0.26s; }
+    .section-header.reveal.visible h2 .word:nth-child(5) { transition-delay: 0.33s; }
+    .section-header.reveal.visible h2 .word:nth-child(6) { transition-delay: 0.40s; }
+    .section-header.reveal.visible h2 .word:nth-child(7) { transition-delay: 0.47s; }
+    .section-header.reveal.visible h2 .word:nth-child(8) { transition-delay: 0.54s; }
+    .section-header.reveal.visible p {
+      opacity: 0; transform: translateY(12px);
+      transition: opacity 0.5s ease 0.45s, transform 0.5s ease 0.45s;
+    }
+    .section-header.reveal.visible p { opacity: 1; transform: translateY(0); }
+
+    /* pill pop */
+    .about-pills.pop-children > * {
+      transform: translateY(16px) scale(0.9);
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      padding: 0 5%;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 72px;
+      transition: background 0.4s, backdrop-filter 0.4s, border-color 0.4s;
+      border-bottom: 1px solid transparent;
+    }
+    nav.scrolled {
+      background: rgba(3,11,24,0.82);
+      backdrop-filter: blur(20px) saturate(180%);
+      border-color: var(--border);
+    }
+    .nav-logo {
+      font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 22px;
+      color: var(--text); text-decoration: none; letter-spacing: -0.5px;
+      display: flex; align-items: center; gap: 0px;
+    }
+    .nav-logo-icon { display: flex; align-items: center; }
+    .nav-links {
+      display: flex; gap: 36px; list-style: none;
+    }
+    .nav-links a {
+      color: var(--text-muted); text-decoration: none; font-size: 14px;
+      font-weight: 400; transition: color 0.2s; letter-spacing: 0.01em;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta {
+      background: var(--accent); color: #fff;
+      border: none; padding: 10px 22px; border-radius: 8px;
+      font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 14px;
+      cursor: pointer; transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 0 20px var(--accent-glow);
+    }
+    .nav-cta:hover { opacity: 0.88; transform: translateY(-1px); box-shadow: 0 4px 28px var(--accent-glow); }
+
+    /* HERO */
+    #hero {
+      position: relative; min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden; padding: 120px 5% 80px;
+    }
+    .hero-grid-overlay {
+      position: absolute; inset: 0; z-index: 1;
+      background-image:
+        linear-gradient(rgba(100,140,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(100,140,255,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 0%, transparent 80%);
+    }
+    .hero-glow {
+      position: absolute; z-index: 1;
+      border-radius: 50%; filter: blur(120px); pointer-events: none;
+    }
+    .hero-glow-1 {
+      width: 600px; height: 600px; top: -100px; left: -100px;
+      background: oklch(62% 0.20 232 / 0.12);
+    }
+    .hero-glow-2 {
+      width: 500px; height: 500px; bottom: -50px; right: -50px;
+      background: oklch(62% 0.18 188 / 0.10);
+    }
+    .hero-content {
+      position: relative; z-index: 2; text-align: center; max-width: 860px;
+    }
+    .hero-badge {
+      animation: fadeIn 0.6s ease both;
+      margin-bottom: 28px; display: inline-block;
+    }
+    .hero-headline {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(42px, 6vw, 80px);
+      font-weight: 800; line-height: 1.08; letter-spacing: -0.03em;
+      margin-bottom: 24px;
+      animation: fadeUp 0.8s 0.2s ease both;
+    }
+    .hero-headline .gradient-text {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 60%, #a78bfa 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      font-size: clamp(16px, 2vw, 20px); color: var(--text-muted);
+      max-width: 580px; margin: 0 auto 40px; font-weight: 300;
+      animation: fadeUp 0.8s 0.35s ease both;
+    }
+    .hero-actions {
+      display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
+      animation: fadeUp 0.8s 0.5s ease both;
+    }
+    .btn-primary {
+      padding: 14px 32px; border-radius: 10px; border: none;
+      background: var(--accent); color: #fff;
+      font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 15px;
+      cursor: pointer; transition: all 0.25s;
+      box-shadow: 0 4px 30px var(--accent-glow);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 40px var(--accent-glow); opacity: 0.9; }
+    .btn-secondary {
+      padding: 14px 32px; border-radius: 10px;
+      border: 1px solid var(--border-bright); background: transparent; color: var(--text);
+      font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 15px;
+      cursor: pointer; transition: all 0.25s;
+    }
+    .btn-secondary:hover { background: rgba(100,140,255,0.08); border-color: oklch(62% 0.20 232 / 0.45); transform: translateY(-2px); }
+
+    .hero-stats {
+      display: flex; justify-content: center; gap: 48px; margin-top: 64px;
+      animation: fadeUp 0.8s 0.65s ease both;
+      padding-top: 40px; border-top: 1px solid var(--border);
+    }
+    .stat { text-align: center; }
+    .stat-num {
+      font-family: 'Outfit', sans-serif; font-size: 32px; font-weight: 700;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .stat-label { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+
+    /* SECTIONS COMMON */
+    section { padding: 100px 5%; }
+    .section-inner { max-width: 1160px; margin: 0 auto; }
+    .section-header { text-align: center; margin-bottom: 64px; }
+    .section-header h2 {
+      font-size: clamp(32px, 4vw, 52px); font-weight: 700;
+      letter-spacing: -0.03em; margin-top: 16px; line-height: 1.15;
+    }
+    .section-header p {
+      color: var(--text-muted); font-size: 16px; max-width: 520px;
+      margin: 16px auto 0;
+    }
+
+    /* ABOUT */
+    #about { background: var(--bg-surface); }
+    .about-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 64px;
+      align-items: center;
+    }
+    .about-visual {
+      position: relative; border-radius: 20px; overflow: hidden;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      aspect-ratio: 1 / 1; max-width: 480px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .about-3d-shape {
+      width: 220px; height: 220px;
+      background: linear-gradient(135deg, oklch(62% 0.20 232 / 0.15), oklch(62% 0.18 188 / 0.1));
+      border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+      animation: morph 8s ease-in-out infinite;
+      border: 1px solid oklch(62% 0.20 232 / 0.2);
+      box-shadow: inset 0 0 60px oklch(62% 0.20 232 / 0.1), 0 0 80px oklch(62% 0.20 232 / 0.1);
+    }
+    @keyframes morph {
+      0%,100% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+      25% { border-radius: 70% 30% 30% 70% / 70% 70% 30% 30%; }
+      50% { border-radius: 50% 50% 30% 70% / 50% 70% 30% 50%; }
+      75% { border-radius: 30% 70% 70% 30% / 70% 30% 70% 30%; }
+    }
+    .about-orb {
+      position: absolute; border-radius: 50%; filter: blur(40px);
+    }
+    .about-text h2 {
+      font-size: clamp(28px, 3vw, 44px); font-weight: 700; letter-spacing: -0.03em;
+      line-height: 1.2; margin-top: 16px;
+    }
+    .about-text p { color: var(--text-muted); margin-top: 16px; font-size: 15px; line-height: 1.8; }
+    .about-pills {
+      display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px;
+    }
+    .pill {
+      padding: 7px 16px; border-radius: 100px; font-size: 13px;
+      border: 1px solid var(--border-bright); color: var(--text-muted);
+      background: var(--bg-card); font-weight: 500;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .pill:hover { border-color: var(--accent); color: var(--text); }
+
+    /* SERVICES */
+    #services { background: var(--bg-deep); }
+    .services-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+    }
+    .service-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px; padding: 32px 28px;
+      cursor: default;
+      transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+      position: relative; overflow: hidden;
+    }
+    .service-card::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, var(--accent-glow), transparent 70%);
+      opacity: 0; transition: opacity 0.35s; border-radius: 16px;
+    }
+    .service-card:hover { transform: translateY(-6px); border-color: var(--border-bright); }
+    .service-card:hover::before { opacity: 1; }
+    .service-card:hover .service-icon-wrap { transform: scale(1.08); }
+    .service-icon-wrap {
+      width: 52px; height: 52px; border-radius: 14px;
+      background: oklch(62% 0.20 232 / 0.12);
+      border: 1px solid oklch(62% 0.20 232 / 0.2);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px; font-size: 22px;
+      transition: transform 0.3s;
+    }
+    .service-card h3 { font-size: 18px; font-weight: 600; margin-bottom: 10px; }
+    .service-card p { color: var(--text-muted); font-size: 14px; line-height: 1.75; }
+    .service-card .card-num {
+      position: absolute; top: 20px; right: 24px;
+      font-family: 'Outfit', sans-serif; font-size: 11px; font-weight: 700;
+      color: var(--text-dim); letter-spacing: 0.08em;
+    }
+
+    /* WHY */
+    #why { background: var(--bg-surface); }
+    .why-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
+    }
+    .why-card {
+      padding: 32px 24px; border-radius: 16px;
+      border: 1px solid var(--border); background: var(--bg-card);
+      text-align: center;
+      transition: transform 0.3s, border-color 0.3s;
+    }
+    .why-card:hover { transform: translateY(-4px); border-color: var(--border-bright); }
+    .why-icon {
+      width: 60px; height: 60px; border-radius: 50%;
+      background: linear-gradient(135deg, oklch(62% 0.20 232 / 0.15), oklch(62% 0.18 188 / 0.08));
+      border: 1px solid var(--border-bright);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; margin: 0 auto 20px;
+    }
+    .why-card h3 { font-size: 17px; font-weight: 600; margin-bottom: 10px; }
+    .why-card p { color: var(--text-muted); font-size: 13px; line-height: 1.7; }
+
+    /* PORTFOLIO */
+    #portfolio { background: var(--bg-deep); }
+    .portfolio-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+    }
+    .portfolio-card {
+      border-radius: 16px; overflow: hidden;
+      border: 1px solid var(--border); background: var(--bg-card);
+      transition: transform 0.3s, border-color 0.3s;
+      cursor: pointer;
+    }
+    .portfolio-card:hover { transform: translateY(-6px); border-color: var(--border-bright); }
+    .portfolio-card:hover .portfolio-img-overlay { opacity: 1; }
+    .portfolio-img {
+      height: 200px; position: relative; overflow: hidden;
+      background: var(--bg-card2);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .portfolio-img-overlay {
+      position: absolute; inset: 0;
+      background: oklch(62% 0.20 232 / 0.15);
+      opacity: 0; transition: opacity 0.3s;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 600; color: var(--accent);
+    }
+    .portfolio-placeholder {
+      width: 100%; height: 100%;
+      background: repeating-linear-gradient(
+        45deg,
+        transparent, transparent 12px,
+        rgba(100,140,255,0.04) 12px, rgba(100,140,255,0.04) 24px
+      );
+      display: flex; align-items: center; justify-content: center;
+    }
+    .portfolio-placeholder span {
+      font-size: 11px; color: var(--text-dim); letter-spacing: 0.08em;
+      text-transform: uppercase; font-family: 'Outfit', sans-serif;
+    }
+    .portfolio-body { padding: 22px 22px 26px; }
+    .portfolio-tag {
+      font-size: 11px; color: var(--accent); font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px;
+    }
+    .portfolio-card h3 { font-size: 17px; font-weight: 600; margin-bottom: 8px; }
+    .portfolio-card p { font-size: 13px; color: var(--text-muted); line-height: 1.65; }
+
+    /* TAGLINES */
+    #taglines { background: var(--bg-surface); }
+    .tagline-list {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;
+      max-width: 860px; margin: 0 auto;
+    }
+    .tagline-item {
+      padding: 22px 26px; border-radius: 12px;
+      border: 1px solid var(--border); background: var(--bg-card);
+      display: flex; align-items: flex-start; gap: 14px;
+      transition: border-color 0.3s, transform 0.25s;
+    }
+    .tagline-item:hover { border-color: var(--border-bright); transform: translateX(4px); }
+    .tagline-num {
+      font-family: 'Outfit', sans-serif; font-size: 11px; font-weight: 700;
+      color: var(--accent); background: oklch(62% 0.20 232 / 0.1);
+      border-radius: 6px; padding: 4px 8px; flex-shrink: 0; margin-top: 2px;
+    }
+    .tagline-item p { font-size: 15px; font-weight: 500; color: var(--text); }
+
+    /* CONTACT */
+    #contact { background: var(--bg-deep); }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; }
+    .contact-info h2 {
+      font-size: clamp(28px, 3vw, 44px); font-weight: 700;
+      letter-spacing: -0.03em; line-height: 1.2; margin-bottom: 16px;
+    }
+    .contact-info p { color: var(--text-muted); font-size: 15px; margin-bottom: 36px; }
+    .contact-detail {
+      display: flex; gap: 14px; margin-bottom: 20px; align-items: flex-start;
+    }
+    .contact-detail-icon {
+      width: 42px; height: 42px; border-radius: 10px; flex-shrink: 0;
+      background: oklch(62% 0.20 232 / 0.10); border: 1px solid var(--border-bright);
+      display: flex; align-items: center; justify-content: center; font-size: 16px;
+    }
+    .contact-detail-text strong { font-size: 13px; color: var(--text-muted); font-weight: 400; display: block; margin-bottom: 2px; }
+    .contact-detail-text span { font-size: 14px; color: var(--text); }
+
+    form { display: flex; flex-direction: column; gap: 16px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group label { font-size: 12px; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.07em; }
+    .form-group input, .form-group textarea, .form-group select {
+      background: var(--bg-card); border: 1px solid var(--border-bright);
+      border-radius: 10px; padding: 12px 16px; color: var(--text);
+      font-family: 'DM Sans', sans-serif; font-size: 14px;
+      outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+      resize: none;
+    }
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+      border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+    .form-group input::placeholder, .form-group textarea::placeholder { color: var(--text-dim); }
+    .form-group select option { background: var(--bg-card); }
+    .form-group textarea { min-height: 120px; }
+
+    .form-submit {
+      width: 100%; padding: 14px; border-radius: 10px; border: none;
+      background: var(--accent); color: #fff;
+      font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 16px;
+      cursor: pointer; transition: all 0.25s;
+      box-shadow: 0 4px 24px var(--accent-glow);
+    }
+    .form-submit:hover { opacity: 0.88; transform: translateY(-2px); box-shadow: 0 8px 36px var(--accent-glow); }
+    .form-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .form-success {
+      text-align: center; padding: 48px 24px;
+      animation: fadeUp 0.5s ease both;
+    }
+    .form-success .check {
+      width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 20px;
+      background: oklch(62% 0.18 188 / 0.15); border: 1px solid oklch(62% 0.18 188 / 0.4);
+      display: flex; align-items: center; justify-content: center; font-size: 28px;
+    }
+    .form-success h3 { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+    .form-success p { color: var(--text-muted); font-size: 14px; }
+
+    /* FOOTER */
+    footer {
+      background: var(--bg-surface); border-top: 1px solid var(--border);
+      padding: 60px 5% 36px;
+    }
+    .footer-inner { max-width: 1160px; margin: 0 auto; }
+    .footer-top {
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px;
+      padding-bottom: 48px; border-bottom: 1px solid var(--border);
+    }
+    .footer-brand p { color: var(--text-muted); font-size: 14px; margin-top: 14px; max-width: 260px; line-height: 1.7; }
+    .footer-col h4 {
+      font-size: 13px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 16px;
+    }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-col ul a {
+      color: var(--text-muted); text-decoration: none; font-size: 14px;
+      transition: color 0.2s;
+    }
+    .footer-col ul a:hover { color: var(--text); }
+    .footer-bottom {
+      display: flex; justify-content: space-between; align-items: center;
+      padding-top: 28px; font-size: 13px; color: var(--text-dim);
+      flex-wrap: wrap; gap: 12px;
+    }
+    .footer-bottom a { color: var(--accent); text-decoration: none; }
+
+    /* MOBILE NAV */
+    .mobile-menu-btn {
+      display: none; background: none; border: 1px solid var(--border-bright);
+      color: var(--text); padding: 8px 12px; border-radius: 8px; cursor: pointer;
+      font-size: 18px;
+    }
+
+    /* DIVIDER */
+    .section-divider {
+      height: 1px; background: linear-gradient(90deg, transparent, var(--border-bright), transparent);
+      margin: 0 5%;
+    }
+
+    /* Number badge */
+    .num-badge {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 28px; height: 28px; border-radius: 8px;
+      background: oklch(62% 0.20 232 / 0.12);
+      border: 1px solid oklch(62% 0.20 232 / 0.2);
+      font-family: 'Outfit', sans-serif; font-size: 11px; font-weight: 700; color: var(--accent);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      .services-grid { grid-template-columns: 1fr 1fr; }
+      .why-grid { grid-template-columns: 1fr 1fr; }
+      .portfolio-grid { grid-template-columns: 1fr 1fr; }
+      .about-grid { grid-template-columns: 1fr; }
+      .about-visual { max-width: 100%; aspect-ratio: 16/9; }
+      .contact-grid { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr 1fr; }
+      .tagline-list { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      .nav-links, .nav-cta { display: none; }
+      .mobile-menu-btn { display: block; }
+      .services-grid { grid-template-columns: 1fr; }
+      .why-grid { grid-template-columns: 1fr; }
+      .portfolio-grid { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr; }
+      .hero-stats { gap: 28px; flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- THREE.JS CANVAS GOES INTO HERO -->
+
+<div id="root"></div>
+
+<script type="text/babel">
+// ── tweaks-panel (inlined) ───────────────────────────────────────────────────
+
+const __TWEAKS_STYLE = `
+  .twk-panel{position:fixed;right:16px;bottom:16px;z-index:2147483646;width:280px;
+    max-height:calc(100vh - 32px);display:flex;flex-direction:column;
+    background:rgba(250,249,247,.78);color:#29261b;
+    -webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);
+    border:.5px solid rgba(255,255,255,.6);border-radius:14px;
+    box-shadow:0 1px 0 rgba(255,255,255,.5) inset,0 12px 40px rgba(0,0,0,.18);
+    font:11.5px/1.4 ui-sans-serif,system-ui,-apple-system,sans-serif;overflow:hidden}
+  .twk-hd{display:flex;align-items:center;justify-content:space-between;
+    padding:10px 8px 10px 14px;cursor:move;user-select:none}
+  .twk-hd b{font-size:12px;font-weight:600;letter-spacing:.01em}
+  .twk-x{appearance:none;border:0;background:transparent;color:rgba(41,38,27,.55);
+    width:22px;height:22px;border-radius:6px;cursor:default;font-size:13px;line-height:1}
+  .twk-x:hover{background:rgba(0,0,0,.06);color:#29261b}
+  .twk-body{padding:2px 14px 14px;display:flex;flex-direction:column;gap:10px;
+    overflow-y:auto;overflow-x:hidden;min-height:0;
+    scrollbar-width:thin;scrollbar-color:rgba(0,0,0,.15) transparent}
+  .twk-body::-webkit-scrollbar{width:8px}
+  .twk-body::-webkit-scrollbar-track{background:transparent;margin:2px}
+  .twk-body::-webkit-scrollbar-thumb{background:rgba(0,0,0,.15);border-radius:4px;
+    border:2px solid transparent;background-clip:content-box}
+  .twk-body::-webkit-scrollbar-thumb:hover{background:rgba(0,0,0,.25);
+    border:2px solid transparent;background-clip:content-box}
+  .twk-row{display:flex;flex-direction:column;gap:5px}
+  .twk-row-h{flex-direction:row;align-items:center;justify-content:space-between;gap:10px}
+  .twk-lbl{display:flex;justify-content:space-between;align-items:baseline;
+    color:rgba(41,38,27,.72)}
+  .twk-lbl>span:first-child{font-weight:500}
+  .twk-val{color:rgba(41,38,27,.5);font-variant-numeric:tabular-nums}
+  .twk-sect{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+    color:rgba(41,38,27,.45);padding:10px 0 0}
+  .twk-sect:first-child{padding-top:0}
+  .twk-field{appearance:none;width:100%;height:26px;padding:0 8px;
+    border:.5px solid rgba(0,0,0,.1);border-radius:7px;
+    background:rgba(255,255,255,.6);color:inherit;font:inherit;outline:none}
+  .twk-field:focus{border-color:rgba(0,0,0,.25);background:rgba(255,255,255,.85)}
+  select.twk-field{padding-right:22px;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path fill='rgba(0,0,0,.5)' d='M0 0h10L5 6z'/></svg>");
+    background-repeat:no-repeat;background-position:right 8px center}
+  .twk-slider{appearance:none;-webkit-appearance:none;width:100%;height:4px;margin:6px 0;
+    border-radius:999px;background:rgba(0,0,0,.12);outline:none}
+  .twk-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;
+    width:14px;height:14px;border-radius:50%;background:#fff;
+    border:.5px solid rgba(0,0,0,.12);box-shadow:0 1px 3px rgba(0,0,0,.2);cursor:default}
+  .twk-slider::-moz-range-thumb{width:14px;height:14px;border-radius:50%;
+    background:#fff;border:.5px solid rgba(0,0,0,.12);box-shadow:0 1px 3px rgba(0,0,0,.2);cursor:default}
+  .twk-seg{position:relative;display:flex;padding:2px;border-radius:8px;
+    background:rgba(0,0,0,.06);user-select:none}
+  .twk-seg-thumb{position:absolute;top:2px;bottom:2px;border-radius:6px;
+    background:rgba(255,255,255,.9);box-shadow:0 1px 2px rgba(0,0,0,.12);
+    transition:left .15s cubic-bezier(.3,.7,.4,1),width .15s}
+  .twk-seg.dragging .twk-seg-thumb{transition:none}
+  .twk-seg button{appearance:none;position:relative;z-index:1;flex:1;border:0;
+    background:transparent;color:inherit;font:inherit;font-weight:500;min-height:22px;
+    border-radius:6px;cursor:default;padding:4px 6px;line-height:1.2;overflow-wrap:anywhere}
+  .twk-toggle{position:relative;width:32px;height:18px;border:0;border-radius:999px;
+    background:rgba(0,0,0,.15);transition:background .15s;cursor:default;padding:0}
+  .twk-toggle[data-on="1"]{background:#34c759}
+  .twk-toggle i{position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;
+    background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform .15s}
+  .twk-toggle[data-on="1"] i{transform:translateX(14px)}
+  .twk-num{display:flex;align-items:center;height:26px;padding:0 0 0 8px;
+    border:.5px solid rgba(0,0,0,.1);border-radius:7px;background:rgba(255,255,255,.6)}
+  .twk-num-lbl{font-weight:500;color:rgba(41,38,27,.6);cursor:ew-resize;
+    user-select:none;padding-right:8px}
+  .twk-num input{flex:1;min-width:0;height:100%;border:0;background:transparent;
+    font:inherit;font-variant-numeric:tabular-nums;text-align:right;padding:0 8px 0 0;
+    outline:none;color:inherit;-moz-appearance:textfield}
+  .twk-num input::-webkit-inner-spin-button,.twk-num input::-webkit-outer-spin-button{
+    -webkit-appearance:none;margin:0}
+  .twk-num-unit{padding-right:8px;color:rgba(41,38,27,.45)}
+  .twk-btn{appearance:none;height:26px;padding:0 12px;border:0;border-radius:7px;
+    background:rgba(0,0,0,.78);color:#fff;font:inherit;font-weight:500;cursor:default}
+  .twk-btn:hover{background:rgba(0,0,0,.88)}
+  .twk-btn.secondary{background:rgba(0,0,0,.06);color:inherit}
+  .twk-btn.secondary:hover{background:rgba(0,0,0,.1)}
+  .twk-swatch{appearance:none;-webkit-appearance:none;width:56px;height:22px;
+    border:.5px solid rgba(0,0,0,.1);border-radius:6px;padding:0;cursor:default;
+    background:transparent;flex-shrink:0}
+  .twk-swatch::-webkit-color-swatch-wrapper{padding:0}
+  .twk-swatch::-webkit-color-swatch{border:0;border-radius:5.5px}
+  .twk-swatch::-moz-color-swatch{border:0;border-radius:5.5px}
+`;
+
+function useTweaks(defaults) {
+  const [values, setValues] = React.useState(defaults);
+  const setTweak = React.useCallback((keyOrEdits, val) => {
+    const edits = typeof keyOrEdits === 'object' && keyOrEdits !== null
+      ? keyOrEdits : { [keyOrEdits]: val };
+    setValues((prev) => ({ ...prev, ...edits }));
+    window.parent.postMessage({ type: '__edit_mode_set_keys', edits }, '*');
+  }, []);
+  return [values, setTweak];
+}
+
+function TweaksPanel({ title = 'Tweaks', children }) {
+  const [open, setOpen] = React.useState(false);
+  const dragRef = React.useRef(null);
+  const offsetRef = React.useRef({ x: 16, y: 16 });
+  const PAD = 16;
+  const clampToViewport = React.useCallback(() => {
+    const panel = dragRef.current;
+    if (!panel) return;
+    const w = panel.offsetWidth, h = panel.offsetHeight;
+    const maxRight = Math.max(PAD, window.innerWidth - w - PAD);
+    const maxBottom = Math.max(PAD, window.innerHeight - h - PAD);
+    offsetRef.current = {
+      x: Math.min(maxRight, Math.max(PAD, offsetRef.current.x)),
+      y: Math.min(maxBottom, Math.max(PAD, offsetRef.current.y)),
+    };
+    panel.style.right = offsetRef.current.x + 'px';
+    panel.style.bottom = offsetRef.current.y + 'px';
+  }, []);
+  React.useEffect(() => {
+    if (!open) return;
+    clampToViewport();
+    if (typeof ResizeObserver === 'undefined') {
+      window.addEventListener('resize', clampToViewport);
+      return () => window.removeEventListener('resize', clampToViewport);
+    }
+    const ro = new ResizeObserver(clampToViewport);
+    ro.observe(document.documentElement);
+    return () => ro.disconnect();
+  }, [open, clampToViewport]);
+  React.useEffect(() => {
+    const onMsg = (e) => {
+      const t = e?.data?.type;
+      if (t === '__activate_edit_mode') setOpen(true);
+      else if (t === '__deactivate_edit_mode') setOpen(false);
+    };
+    window.addEventListener('message', onMsg);
+    window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+    return () => window.removeEventListener('message', onMsg);
+  }, []);
+  const dismiss = () => {
+    setOpen(false);
+    window.parent.postMessage({ type: '__edit_mode_dismissed' }, '*');
+  };
+  const onDragStart = (e) => {
+    const panel = dragRef.current;
+    if (!panel) return;
+    const r = panel.getBoundingClientRect();
+    const sx = e.clientX, sy = e.clientY;
+    const startRight = window.innerWidth - r.right;
+    const startBottom = window.innerHeight - r.bottom;
+    const move = (ev) => {
+      offsetRef.current = { x: startRight - (ev.clientX - sx), y: startBottom - (ev.clientY - sy) };
+      clampToViewport();
+    };
+    const up = () => { window.removeEventListener('mousemove', move); window.removeEventListener('mouseup', up); };
+    window.addEventListener('mousemove', move);
+    window.addEventListener('mouseup', up);
+  };
+  if (!open) return null;
+  return (
+    <>
+      <style>{__TWEAKS_STYLE}</style>
+      <div ref={dragRef} className="twk-panel" style={{ right: offsetRef.current.x, bottom: offsetRef.current.y }}>
+        <div className="twk-hd" onMouseDown={onDragStart}>
+          <b>{title}</b>
+          <button className="twk-x" aria-label="Close tweaks" onMouseDown={(e) => e.stopPropagation()} onClick={dismiss}>✕</button>
+        </div>
+        <div className="twk-body">{children}</div>
+      </div>
+    </>
+  );
+}
+
+function TweakSection({ label, children }) {
+  return (<><div className="twk-sect">{label}</div>{children}</>);
+}
+
+function TweakRow({ label, value, children, inline = false }) {
+  return (
+    <div className={inline ? 'twk-row twk-row-h' : 'twk-row'}>
+      <div className="twk-lbl">
+        <span>{label}</span>
+        {value != null && <span className="twk-val">{value}</span>}
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function TweakSlider({ label, value, min = 0, max = 100, step = 1, unit = '', onChange }) {
+  return (
+    <TweakRow label={label} value={`${value}${unit}`}>
+      <input type="range" className="twk-slider" min={min} max={max} step={step}
+             value={value} onChange={(e) => onChange(Number(e.target.value))} />
+    </TweakRow>
+  );
+}
+
+function TweakToggle({ label, value, onChange }) {
+  return (
+    <div className="twk-row twk-row-h">
+      <div className="twk-lbl"><span>{label}</span></div>
+      <button type="button" className="twk-toggle" data-on={value ? '1' : '0'}
+              role="switch" aria-checked={!!value} onClick={() => onChange(!value)}><i /></button>
+    </div>
+  );
+}
+
+function TweakText({ label, value, placeholder, onChange }) {
+  return (
+    <TweakRow label={label}>
+      <input className="twk-field" type="text" value={value} placeholder={placeholder}
+             onChange={(e) => onChange(e.target.value)} />
+    </TweakRow>
+  );
+}
+</script>
+
+<script type="text/babel">
+
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "accentHue": 232,
+  "accentHue2": 188,
+  "heroHeadline": "Engineering the Future,\nPowering Your Growth",
+  "tagline": "Your Trusted Technology Partner for Odoo ERP & Beyond",
+  "particleCount": 60,
+  "showStats": true,
+  "cardStyle": "glass"
+}/*EDITMODE-END*/;
+
+const { useState, useEffect, useRef, useCallback } = React;
+
+// ── THREE.JS HERO SCENE ──────────────────────────────────────────────────────
+function HeroCanvas({ hue }) {
+  const canvasRef = useRef(null);
+  useEffect(() => {
+    if (!window.THREE) return;
+    const canvas = canvasRef.current;
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(canvas.offsetWidth, canvas.offsetHeight);
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(50, canvas.offsetWidth / canvas.offsetHeight, 0.1, 100);
+    camera.position.z = 6;
+
+    // Particles
+    const geometry = new THREE.BufferGeometry();
+    const count = 120;
+    const positions = new Float32Array(count * 3);
+    const scales = new Float32Array(count);
+    for (let i = 0; i < count; i++) {
+      positions[i * 3]     = (Math.random() - 0.5) * 14;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 8;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 6;
+      scales[i] = Math.random();
+    }
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    const pMat = new THREE.PointsMaterial({ color: 0x4488ff, size: 0.04, transparent: true, opacity: 0.6 });
+    const particles = new THREE.Points(geometry, pMat);
+    scene.add(particles);
+
+    // Floating shapes
+    const shapes = [];
+    const shapeGeos = [
+      new THREE.IcosahedronGeometry(0.4, 0),
+      new THREE.OctahedronGeometry(0.45, 0),
+      new THREE.TetrahedronGeometry(0.38, 0),
+      new THREE.IcosahedronGeometry(0.3, 1),
+      new THREE.OctahedronGeometry(0.35, 0),
+    ];
+    const mat = new THREE.MeshBasicMaterial({ color: 0x4488ff, wireframe: true, transparent: true, opacity: 0.22 });
+    shapeGeos.forEach((geo, i) => {
+      const mesh = new THREE.Mesh(geo, mat.clone());
+      mesh.position.set(
+        (Math.random() - 0.5) * 10,
+        (Math.random() - 0.5) * 5,
+        (Math.random() - 0.5) * 3 - 1
+      );
+      mesh.userData = { speed: 0.002 + Math.random() * 0.003, phase: Math.random() * Math.PI * 2 };
+      scene.add(mesh);
+      shapes.push(mesh);
+    });
+
+    // Connecting lines
+    const lineMat = new THREE.LineBasicMaterial({ color: 0x4488ff, transparent: true, opacity: 0.07 });
+    const lineGeo = new THREE.BufferGeometry();
+    const linePos = new Float32Array(60 * 3);
+    for (let i = 0; i < 60; i++) {
+      linePos[i * 3]     = (Math.random() - 0.5) * 14;
+      linePos[i * 3 + 1] = (Math.random() - 0.5) * 8;
+      linePos[i * 3 + 2] = (Math.random() - 0.5) * 4;
+    }
+    lineGeo.setAttribute('position', new THREE.BufferAttribute(linePos, 3));
+    const lines = new THREE.Line(lineGeo, lineMat);
+    scene.add(lines);
+
+    let mouse = { x: 0, y: 0 };
+    const onMouse = (e) => {
+      mouse.x = (e.clientX / window.innerWidth - 0.5) * 2;
+      mouse.y = -(e.clientY / window.innerHeight - 0.5) * 2;
+    };
+    window.addEventListener('mousemove', onMouse);
+
+    let raf;
+    let t = 0;
+    const animate = () => {
+      raf = requestAnimationFrame(animate);
+      t += 0.005;
+      particles.rotation.y = t * 0.05;
+      particles.rotation.x = mouse.y * 0.08;
+      camera.position.x += (mouse.x * 0.4 - camera.position.x) * 0.04;
+      camera.position.y += (mouse.y * 0.2 - camera.position.y) * 0.04;
+      shapes.forEach((s) => {
+        s.rotation.x += s.userData.speed;
+        s.rotation.y += s.userData.speed * 0.7;
+        s.position.y += Math.sin(t + s.userData.phase) * 0.002;
+      });
+      renderer.render(scene, camera);
+    };
+    animate();
+
+    const onResize = () => {
+      renderer.setSize(canvas.offsetWidth, canvas.offsetHeight);
+      camera.aspect = canvas.offsetWidth / canvas.offsetHeight;
+      camera.updateProjectionMatrix();
+    };
+    window.addEventListener('resize', onResize);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener('mousemove', onMouse);
+      window.removeEventListener('resize', onResize);
+      renderer.dispose();
+    };
+  }, []);
+
+  return React.createElement('canvas', { ref: canvasRef, id: 'hero-canvas' });
+}
+
+// ── NAV ──────────────────────────────────────────────────────────────────────
+function Nav({ tweaks, setTweak }) {
+  const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  useEffect(() => {
+    const fn = () => setScrolled(window.scrollY > 40);
+    window.addEventListener('scroll', fn);
+    return () => window.removeEventListener('scroll', fn);
+  }, []);
+  const links = ['About', 'Services', 'Portfolio', 'Contact'];
+  return (
+    <nav className={scrolled ? 'scrolled' : ''}>
+      <a className="nav-logo" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 56" fill="none" height="38">
+          <defs>
+            <linearGradient id="ng1" x1="0" y1="0" x2="56" y2="56" gradientUnits="userSpaceOnUse"><stop offset="0%" stopColor="#4a9eff"/><stop offset="100%" stopColor="#2de8c8"/></linearGradient>
+            <linearGradient id="ng2" x1="0" y1="0" x2="56" y2="56" gradientUnits="userSpaceOnUse"><stop offset="0%" stopColor="#4a9eff" stopOpacity="0.18"/><stop offset="100%" stopColor="#2de8c8" stopOpacity="0.08"/></linearGradient>
+            <filter id="nglow"><feGaussianBlur stdDeviation="1.5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          </defs>
+          <rect x="1" y="1" width="54" height="54" rx="13" fill="url(#ng2)" stroke="url(#ng1)" strokeWidth="1.2" opacity="0.5"/>
+          <g filter="url(#nglow)">
+            <line x1="16" y1="14" x2="40" y2="14" stroke="url(#ng1)" strokeWidth="3.5" strokeLinecap="round"/>
+            <line x1="16" y1="28" x2="34" y2="28" stroke="url(#ng1)" strokeWidth="3.5" strokeLinecap="round"/>
+            <line x1="16" y1="42" x2="40" y2="42" stroke="url(#ng1)" strokeWidth="3.5" strokeLinecap="round"/>
+            <line x1="16" y1="14" x2="16" y2="42" stroke="url(#ng1)" strokeWidth="3.5" strokeLinecap="round"/>
+            <circle cx="40" cy="14" r="4" fill="#4a9eff" opacity="0.9"/><circle cx="40" cy="14" r="2" fill="#fff" opacity="0.9"/>
+            <circle cx="34" cy="28" r="4" fill="#38d4b0" opacity="0.9"/><circle cx="34" cy="28" r="2" fill="#fff" opacity="0.9"/>
+            <circle cx="40" cy="42" r="4" fill="#4a9eff" opacity="0.9"/><circle cx="40" cy="42" r="2" fill="#fff" opacity="0.9"/>
+          </g>
+          <line x1="62" y1="14" x2="62" y2="42" stroke="#4a9eff" strokeWidth="0.8" strokeOpacity="0.25"/>
+          <text x="68" y="23" fontFamily="'Outfit','Helvetica Neue',sans-serif" fontWeight="700" fontSize="19" letterSpacing="-0.5" fill="#e6eeff">Ellium</text>
+          <text x="68" y="42" fontFamily="'Outfit','Helvetica Neue',sans-serif" fontWeight="300" fontSize="13" letterSpacing="3.5" fill="#7a8daa">LABS</text>
+        </svg>
+      </a>
+      <ul className="nav-links">
+        {links.map(l => (
+          <li key={l}><a href={`#${l.toLowerCase()}`}>{l}</a></li>
+        ))}
+      </ul>
+      <button className="nav-cta" onClick={() => document.getElementById('contact').scrollIntoView({behavior:'smooth'})}>
+        Get Consultation
+      </button>
+      <button className="mobile-menu-btn" onClick={() => setMenuOpen(!menuOpen)}>☰</button>
+    </nav>
+  );
+}
+
+// ── HERO ─────────────────────────────────────────────────────────────────────
+function Hero({ tweaks }) {
+  const lines = (tweaks.heroHeadline || '').split('\n');
+  return (
+    <section id="hero">
+      <HeroCanvas hue={tweaks.accentHue} />
+      <div className="hero-grid-overlay"></div>
+      <div className="hero-glow hero-glow-1"></div>
+      <div className="hero-glow hero-glow-2"></div>
+      <div className="hero-content">
+        <div className="hero-badge">
+          <span className="section-tag">Odoo ERP Specialists</span>
+        </div>
+        <h1 className="hero-headline">
+          {lines[0]}{lines[1] && <><br/><span className="gradient-text">{lines[1]}</span></>}
+        </h1>
+        <p className="hero-sub">{tweaks.tagline}</p>
+        <div className="hero-actions">
+          <button className="btn-primary" onClick={() => document.getElementById('contact').scrollIntoView({behavior:'smooth'})}>
+            <span>Get Consultation</span>
+            <span>→</span>
+          </button>
+          <button className="btn-secondary" onClick={() => document.getElementById('services').scrollIntoView({behavior:'smooth'})}>
+            Explore Services
+          </button>
+        </div>
+        {tweaks.showStats && (
+          <div className="hero-stats pop-children">
+            {[['150+','Projects Delivered'],['98%','Client Satisfaction'],['10+','Industries Served'],['6+','Years Experience']].map(([n,l]) => (
+              <div className="stat" key={l}>
+                <div className="stat-num">{n}</div>
+                <div className="stat-label">{l}</div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+// ── ABOUT ─────────────────────────────────────────────────────────────────────
+function About() {
+  return (
+    <section id="about">
+      <div className="section-inner">
+        <div className="about-grid">
+          <div className="about-visual slide-left">
+            <div style={{position:'absolute',inset:0,background:'radial-gradient(circle at 30% 40%, oklch(62% 0.20 232 / 0.08), transparent 60%)'}}></div>
+            <div style={{position:'absolute',inset:0,background:'radial-gradient(circle at 70% 70%, oklch(62% 0.18 188 / 0.06), transparent 50%)'}}></div>
+            <div className="about-3d-shape"></div>
+            <div style={{position:'absolute',bottom:'24px',left:'24px',right:'24px',background:'var(--bg-card2)',border:'1px solid var(--border)',borderRadius:'12px',padding:'16px 20px'}}>
+              <div style={{fontSize:'11px',color:'var(--text-muted)',fontWeight:'600',letterSpacing:'0.1em',textTransform:'uppercase',marginBottom:'8px'}}>Odoo Certified Partner</div>
+              <div style={{height:'4px',background:'var(--border)',borderRadius:'2px',overflow:'hidden'}}>
+                <div style={{height:'100%',width:'88%',background:'linear-gradient(90deg,var(--accent),var(--accent2))',borderRadius:'2px'}}></div>
+              </div>
+              <div style={{marginTop:'6px',fontSize:'12px',color:'var(--text-muted)',display:'flex',justifyContent:'space-between'}}>
+                <span>Expertise</span><span style={{color:'var(--accent)',fontWeight:'600'}}>88%</span>
+              </div>
+            </div>
+          </div>
+          <div className="about-text slide-right">
+            <span className="section-tag">About Us</span>
+            <h2>We Build Technology That Moves Businesses Forward</h2>
+            <p>Ellium Labs is a technology company at the intersection of intelligent ERP solutions and modern software engineering. We specialize in Odoo implementation, customization, and integration — helping businesses streamline operations, reduce friction, and scale confidently.</p>
+            <p style={{marginTop:'14px'}}>Our team brings deep technical expertise, a client-first philosophy, and a commitment to delivering solutions that don't just work today — but grow with you for years to come.</p>
+            <div className="about-pills pop-children">
+              {['Odoo ERP','Business Automation','Custom Development','IT Consulting','Cloud Solutions','System Integration'].map(p => (
+                <span className="pill" key={p}>{p}</span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── SERVICES ──────────────────────────────────────────────────────────────────
+const SERVICES = [
+  { icon: '⬡', title: 'Odoo ERP Implementation', desc: 'End-to-end Odoo deployment tailored to your business workflows — from requirements analysis to go-live and beyond.', num: '01' },
+  { icon: '◈', title: 'Odoo Customization & Integration', desc: 'Custom modules, API integrations, and third-party connectors that extend Odoo to fit your exact needs.', num: '02' },
+  { icon: '⟳', title: 'Business Process Automation', desc: 'Identify bottlenecks and automate repetitive tasks — freeing your team to focus on what creates real value.', num: '03' },
+  { icon: '⌥', title: 'Web & Software Development', desc: 'Scalable web apps, portals, and bespoke software built with modern stacks and engineering best practices.', num: '04' },
+  { icon: '◎', title: 'IT Consulting & Support', desc: 'Strategic technology advice and reliable ongoing support to keep your systems performing at peak capacity.', num: '05' },
+  { icon: '⬙', title: 'Cloud & Infrastructure', desc: 'Cloud migration, DevOps setup, and infrastructure management so your systems are secure, fast, and always on.', num: '06' },
+];
+
+function Services() {
+  return (
+    <section id="services">
+      <div className="section-inner">
+        <div className="section-header reveal">
+          <span className="section-tag">What We Do</span>
+          <h2>Services Built Around <span style={{background:'linear-gradient(135deg,var(--accent),var(--accent2))',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',backgroundClip:'text'}}>Your Goals</span></h2>
+          <p>A comprehensive suite of technology services designed to modernize, automate, and accelerate your business.</p>
+        </div>
+        <div className="services-grid pop-children">
+          {SERVICES.map((s) => (
+            <div className="service-card" key={s.num}>
+              <span className="card-num">{s.num}</span>
+              <div className="service-icon-wrap">{s.icon}</div>
+              <h3>{s.title}</h3>
+              <p>{s.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── WHY ───────────────────────────────────────────────────────────────────────
+const WHY = [
+  { icon: '◇', title: 'Deep Odoo Expertise', desc: 'Years of Odoo implementation experience across manufacturing, retail, services, and more.' },
+  { icon: '◈', title: 'Client-Focused Approach', desc: 'We listen first. Every engagement starts with understanding your unique business challenges.' },
+  { icon: '⬡', title: 'Scalable Solutions', desc: 'Architecture that grows with you — no need to re-platform as your business evolves.' },
+  { icon: '◉', title: 'Reliable Long-Term Support', desc: 'Post-launch partnerships with SLAs, proactive monitoring, and a team that knows your system.' },
+];
+
+function Why() {
+  return (
+    <section id="why">
+      <div className="section-inner">
+        <div className="section-header reveal">
+          <span className="section-tag">Why Ellium Labs</span>
+          <h2>The Partner Built for the Long Run</h2>
+          <p>We don't just implement software. We become invested in your success.</p>
+        </div>
+        <div className="why-grid pop-children">
+          {WHY.map(w => (
+            <div className="why-card" key={w.title}>
+              <div className="why-icon">{w.icon}</div>
+              <h3>{w.title}</h3>
+              <p>{w.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── PORTFOLIO ────────────────────────────────────────────────────────────────
+const PROJECTS = [
+  { tag: 'Odoo ERP', title: 'Manufacturing ERP Rollout', desc: 'Full Odoo 16 implementation for a mid-size manufacturer — MRP, inventory, and finance unified in one platform.' },
+  { tag: 'Automation', title: 'Retail Chain Automation', desc: 'Automated procurement, stock management, and POS integration across 12 retail locations.' },
+  { tag: 'Custom Dev', title: 'Client Portal & CRM', desc: 'Bespoke customer portal with integrated CRM, ticketing system, and real-time analytics dashboard.' },
+  { tag: 'Integration', title: 'Multi-system Integration', desc: 'Seamless API integration connecting Odoo with Shopify, Stripe, and a custom logistics platform.' },
+  { tag: 'Consulting', title: 'Digital Transformation', desc: 'Full-stack technology advisory for a services firm migrating from legacy systems to a modern cloud stack.' },
+  { tag: 'Web Dev', title: 'SaaS Platform Build', desc: 'End-to-end development of a B2B SaaS application with multi-tenancy, billing, and an admin dashboard.' },
+];
+
+function Portfolio() {
+  return (
+    <section id="portfolio">
+      <div className="section-inner">
+        <div className="section-header reveal">
+          <span className="section-tag">Case Studies</span>
+          <h2>Work That Speaks for Itself</h2>
+          <p>Real projects, real outcomes. Here are some highlights from our client engagements.</p>
+        </div>
+        <div className="portfolio-grid pop-children">
+          {PROJECTS.map(p => (
+            <div className="portfolio-card" key={p.title}>
+              <div className="portfolio-img">
+                <div className="portfolio-placeholder">
+                  <span>project visual</span>
+                </div>
+                <div className="portfolio-img-overlay">View Case Study →</div>
+              </div>
+              <div className="portfolio-body">
+                <div className="portfolio-tag">{p.tag}</div>
+                <h3>{p.title}</h3>
+                <p>{p.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── TAGLINES ─────────────────────────────────────────────────────────────────
+const TAGLINES = [
+  'Your Trusted Technology Partner for Odoo ERP & Beyond',
+  'Where Business Strategy Meets Engineering Excellence',
+  'Smarter Systems. Stronger Businesses.',
+  'Built to Scale. Designed to Last.',
+  'Technology Partnerships That Deliver Results',
+];
+
+function Taglines() {
+  return (
+    <section id="taglines" style={{paddingTop:'80px',paddingBottom:'80px'}}>
+      <div className="section-inner">
+        <div className="section-header reveal">
+          <span className="section-tag">Brand Voice</span>
+          <h2>Our Tagline Options</h2>
+          <p>Five variations — each capturing a different facet of what Ellium Labs delivers.</p>
+        </div>
+        <div className="tagline-list pop-children">
+          {TAGLINES.map((t, i) => (
+            <div className="tagline-item" key={i} style={i === 0 ? {borderColor:'oklch(62% 0.20 232 / 0.45)',background:'oklch(62% 0.20 232 / 0.05)'} : {}}>
+              <span className="tagline-num">{String(i+1).padStart(2,'0')}</span>
+              <p>{t}{i === 0 && <span style={{marginLeft:'8px',fontSize:'11px',color:'var(--accent)',fontWeight:'600'}}>★ Primary</span>}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── CONTACT ───────────────────────────────────────────────────────────────────
+function Contact() {
+  const [form, setForm] = useState({ name: '', email: '', company: '', service: '', message: '' });
+  const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [errors, setErrors] = useState({});
+
+  const validate = () => {
+    const e = {};
+    if (!form.name.trim()) e.name = true;
+    if (!form.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) e.email = true;
+    if (!form.message.trim()) e.message = true;
+    return e;
+  };
+
+  const handleSubmit = async (ev) => {
+    ev.preventDefault();
+    const e = validate();
+    if (Object.keys(e).length) { setErrors(e); return; }
+    setErrors({});
+    setSending(true);
+    await new Promise(r => setTimeout(r, 1400));
+    setSending(false);
+    setSent(true);
+  };
+
+  const set = (k) => (ev) => { setForm(f => ({...f, [k]: ev.target.value})); setErrors(e => ({...e, [k]: false})); };
+
+  const inputStyle = (k) => errors[k] ? {borderColor:'oklch(62% 0.18 15 / 0.8)',boxShadow:'0 0 0 3px oklch(62% 0.18 15 / 0.15)'} : {};
+
+  return (
+    <section id="contact">
+      <div className="section-inner">
+        <div className="section-header reveal">
+          <span className="section-tag">Get In Touch</span>
+          <h2>Let's Build Something Together</h2>
+          <p>Ready to modernize your operations? Tell us about your project and we'll get back to you within 24 hours.</p>
+        </div>
+        <div className="contact-grid pop-children">
+          <div className="contact-info">
+            <div className="contact-detail">
+              <div className="contact-detail-icon">✉</div>
+              <div className="contact-detail-text">
+                <strong>Email</strong>
+                <span>hello@elliumlabs.com</span>
+              </div>
+            </div>
+            <div className="contact-detail">
+              <div className="contact-detail-icon">☎</div>
+              <div className="contact-detail-text">
+                <strong>Phone</strong>
+                <span>+1 (555) 000-0000</span>
+              </div>
+            </div>
+            <div className="contact-detail">
+              <div className="contact-detail-icon">◎</div>
+              <div className="contact-detail-text">
+                <strong>Office</strong>
+                <span>123 Tech Avenue, Suite 400<br/>San Francisco, CA 94105</span>
+              </div>
+            </div>
+            <div className="contact-detail">
+              <div className="contact-detail-icon">◷</div>
+              <div className="contact-detail-text">
+                <strong>Business Hours</strong>
+                <span>Mon–Fri, 9:00 AM – 6:00 PM PST</span>
+              </div>
+            </div>
+            <div style={{marginTop:'32px',padding:'24px',borderRadius:'14px',border:'1px solid var(--border)',background:'var(--bg-card)'}}>
+              <div style={{fontSize:'13px',color:'var(--text-muted)',marginBottom:'10px',fontWeight:'500'}}>Response Time</div>
+              <div style={{fontSize:'28px',fontFamily:'Outfit',fontWeight:'700',background:'linear-gradient(135deg,var(--accent),var(--accent2))',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',backgroundClip:'text'}}>{"< 24 hours"}</div>
+              <div style={{fontSize:'13px',color:'var(--text-muted)',marginTop:'6px'}}>We take every inquiry seriously.</div>
+            </div>
+          </div>
+          <div>
+            {sent ? (
+              <div className="form-success">
+                <div className="check">✓</div>
+                <h3>Message Received</h3>
+                <p>Thank you for reaching out. We'll review your message and be in touch within 24 hours.</p>
+                <button className="btn-secondary" style={{marginTop:'24px',display:'inline-block'}} onClick={() => { setSent(false); setForm({ name:'', email:'', company:'', service:'', message:'' }); }}>Send Another</button>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} noValidate>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Your Name *</label>
+                    <input type="text" placeholder="John Smith" value={form.name} onChange={set('name')} style={inputStyle('name')} />
+                  </div>
+                  <div className="form-group">
+                    <label>Email Address *</label>
+                    <input type="email" placeholder="john@company.com" value={form.email} onChange={set('email')} style={inputStyle('email')} />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Company</label>
+                    <input type="text" placeholder="Your Company" value={form.company} onChange={set('company')} />
+                  </div>
+                  <div className="form-group">
+                    <label>Service Interested In</label>
+                    <select value={form.service} onChange={set('service')}>
+                      <option value="">Select a service…</option>
+                      <option>Odoo ERP Implementation</option>
+                      <option>Odoo Customization & Integration</option>
+                      <option>Business Process Automation</option>
+                      <option>Web & Software Development</option>
+                      <option>IT Consulting & Support</option>
+                      <option>Other</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="form-group">
+                  <label>How can we help? *</label>
+                  <textarea placeholder="Tell us about your project, goals, and timeline…" value={form.message} onChange={set('message')} style={inputStyle('message')}></textarea>
+                </div>
+                <button className="form-submit" type="submit" disabled={sending}>
+                  {sending ? 'Sending…' : 'Send Message →'}
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── FOOTER ────────────────────────────────────────────────────────────────────
+function Footer() {
+  return (
+    <footer>
+      <div className="footer-inner">
+        <div className="footer-top">
+          <div className="footer-brand">
+            <a className="nav-logo" href="#" style={{textDecoration:'none'}}>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 56" fill="none" height="34">
+                <defs>
+                  <linearGradient id="fg1" x1="0" y1="0" x2="56" y2="56" gradientUnits="userSpaceOnUse"><stop offset="0%" stopColor="#4a9eff"/><stop offset="100%" stopColor="#2de8c8"/></linearGradient>
+                  <linearGradient id="fg2" x1="0" y1="0" x2="56" y2="56" gradientUnits="userSpaceOnUse"><stop offset="0%" stopColor="#4a9eff" stopOpacity="0.18"/><stop offset="100%" stopColor="#2de8c8" stopOpacity="0.08"/></linearGradient>
+                </defs>
+                <rect x="1" y="1" width="54" height="54" rx="13" fill="url(#fg2)" stroke="url(#fg1)" strokeWidth="1.2" opacity="0.5"/>
+                <line x1="16" y1="14" x2="40" y2="14" stroke="url(#fg1)" strokeWidth="3.5" strokeLinecap="round"/>
+                <line x1="16" y1="28" x2="34" y2="28" stroke="url(#fg1)" strokeWidth="3.5" strokeLinecap="round"/>
+                <line x1="16" y1="42" x2="40" y2="42" stroke="url(#fg1)" strokeWidth="3.5" strokeLinecap="round"/>
+                <line x1="16" y1="14" x2="16" y2="42" stroke="url(#fg1)" strokeWidth="3.5" strokeLinecap="round"/>
+                <circle cx="40" cy="14" r="4" fill="#4a9eff" opacity="0.9"/><circle cx="40" cy="14" r="2" fill="#fff" opacity="0.9"/>
+                <circle cx="34" cy="28" r="4" fill="#38d4b0" opacity="0.9"/><circle cx="34" cy="28" r="2" fill="#fff" opacity="0.9"/>
+                <circle cx="40" cy="42" r="4" fill="#4a9eff" opacity="0.9"/><circle cx="40" cy="42" r="2" fill="#fff" opacity="0.9"/>
+                <line x1="62" y1="14" x2="62" y2="42" stroke="#4a9eff" strokeWidth="0.8" strokeOpacity="0.25"/>
+                <text x="68" y="23" fontFamily="'Outfit','Helvetica Neue',sans-serif" fontWeight="700" fontSize="19" letterSpacing="-0.5" fill="#e6eeff">Ellium</text>
+                <text x="68" y="42" fontFamily="'Outfit','Helvetica Neue',sans-serif" fontWeight="300" fontSize="13" letterSpacing="3.5" fill="#7a8daa">LABS</text>
+              </svg>
+            </a>
+            <p>Your trusted technology partner for Odoo ERP implementation, software development, and IT consulting.</p>
+            <div style={{display:'flex',gap:'12px',marginTop:'20px'}}>
+              {['in','tw','gh'].map(s => (
+                <div key={s} style={{width:'34px',height:'34px',borderRadius:'8px',border:'1px solid var(--border)',display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',fontSize:'12px',color:'var(--text-muted)',fontFamily:'Outfit',fontWeight:'700',transition:'border-color 0.2s,color 0.2s'}}
+                  onMouseEnter={e=>{e.target.style.borderColor='var(--border-bright)';e.target.style.color='var(--text)'}}
+                  onMouseLeave={e=>{e.target.style.borderColor='var(--border)';e.target.style.color='var(--text-muted)'}}>
+                  {s}
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="footer-col">
+            <h4>Services</h4>
+            <ul>
+              {['ERP Implementation','Customization','Automation','Web Dev','IT Consulting'].map(l => <li key={l}><a href="#">{l}</a></li>)}
+            </ul>
+          </div>
+          <div className="footer-col">
+            <h4>Company</h4>
+            <ul>
+              {['About Us','Portfolio','Case Studies','Careers','Blog'].map(l => <li key={l}><a href="#">{l}</a></li>)}
+            </ul>
+          </div>
+          <div className="footer-col">
+            <h4>Legal</h4>
+            <ul>
+              {['Privacy Policy','Terms of Service','Cookie Policy','Sitemap'].map(l => <li key={l}><a href="#">{l}</a></li>)}
+            </ul>
+          </div>
+        </div>
+        <div className="footer-bottom">
+          <span>© 2026 Ellium Labs. All rights reserved.</span>
+          <span>Built with precision · Delivered with care</span>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+// ── APP ───────────────────────────────────────────────────────────────────────
+function App() {
+  const [tweaks, setTweak] = useTweaks(TWEAK_DEFAULTS);
+
+  // Reveal + pop on scroll
+  useEffect(() => {
+    const selectors = '.reveal, .pop-children, .slide-left, .slide-right';
+    const els = document.querySelectorAll(selectors);
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          // stat number flash
+          if (e.target.classList.contains('hero-stats')) {
+            e.target.querySelectorAll('.stat').forEach(s => s.classList.add('popped'));
+          }
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.10 });
+    els.forEach(el => io.observe(el));
+    return () => io.disconnect();
+  }, []);
+
+  // Apply accent hue custom property
+  useEffect(() => {
+    document.documentElement.style.setProperty('--accent', `oklch(62% 0.20 ${tweaks.accentHue})`);
+    document.documentElement.style.setProperty('--accent2', `oklch(62% 0.18 ${tweaks.accentHue2})`);
+    document.documentElement.style.setProperty('--accent-glow', `oklch(62% 0.20 ${tweaks.accentHue} / 0.35)`);
+    document.documentElement.style.setProperty('--accent2-glow', `oklch(62% 0.18 ${tweaks.accentHue2} / 0.35)`);
+  }, [tweaks.accentHue, tweaks.accentHue2]);
+
+  return (
+    <>
+      <Nav tweaks={tweaks} setTweak={setTweak} />
+      <Hero tweaks={tweaks} />
+      <div className="section-divider"></div>
+      <About />
+      <div className="section-divider"></div>
+      <Services />
+      <div className="section-divider"></div>
+      <Why />
+      <div className="section-divider"></div>
+      <Portfolio />
+      <div className="section-divider"></div>
+      <Taglines />
+      <div className="section-divider"></div>
+      <Contact />
+      <Footer />
+      <TweaksPanel>
+        <TweakSection label="Brand">
+          <TweakColor label="Accent Color" k="accentHue" tweaks={tweaks} setTweak={setTweak} isHue={true} min={0} max={360} />
+          <TweakColor label="Secondary Accent" k="accentHue2" tweaks={tweaks} setTweak={setTweak} isHue={true} min={0} max={360} />
+        </TweakSection>
+        <TweakSection label="Hero">
+          <TweakText label="Headline" value={tweaks.heroHeadline} onChange={(v) => setTweak('heroHeadline', v)} />
+          <TweakText label="Tagline" value={tweaks.tagline} onChange={(v) => setTweak('tagline', v)} />
+          <TweakToggle label="Show Stats Bar" value={tweaks.showStats} onChange={(v) => setTweak('showStats', v)} />
+        </TweakSection>
+      </TweaksPanel>
+    </>
+  );
+}
+
+// Custom color hue slider as tweak control
+function TweakColor({ label, k, tweaks, setTweak, isHue, min, max }) {
+  return (
+    <TweakSlider label={label} value={tweaks[k]} min={min || 0} max={max || 360} step={1} onChange={(v) => setTweak(k, v)} />
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+
+<template id="__bundler_thumbnail">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80">
+    <rect width="120" height="80" fill="#030b18"/>
+    <circle cx="40" cy="35" r="18" fill="none" stroke="oklch(62% 0.20 232)" stroke-width="1.5" opacity="0.6"/>
+    <polygon points="85,20 100,45 70,45" fill="none" stroke="oklch(62% 0.18 188)" stroke-width="1.5" opacity="0.6"/>
+    <rect x="50" y="55" width="20" height="12" rx="2" fill="oklch(62% 0.20 232)" opacity="0.7"/>
+    <text x="60" y="74" text-anchor="middle" font-size="7" fill="oklch(62% 0.20 232)" opacity="0.5" font-family="sans-serif">ELLIUM</text>
+  </svg>
+</template>
+
+</body>
+</html>

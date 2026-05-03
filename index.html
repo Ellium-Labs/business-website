@@ -3,623 +3,542 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ellium Labs — Your Trusted Technology Partner</title>
-  <meta name="description" content="Ellium Labs specializes in Odoo ERP solutions, software development, and IT consulting. Empowering businesses through intelligent technology." />
+  <title>Ellium Labs — Odoo ERP & Software Solutions</title>
+  <meta name="description" content="Ellium Labs builds and implements Odoo ERP systems, custom software, and web solutions for businesses globally. Odoo-certified team, 13+ members." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
   <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --bg-deep:    #030b18;
-      --bg-surface: #070f20;
-      --bg-card:    #0b1529;
-      --bg-card2:   #0f1c35;
-      --accent:     oklch(62% 0.20 232);
-      --accent2:    oklch(62% 0.18 188);
-      --accent-glow: oklch(62% 0.20 232 / 0.35);
-      --accent2-glow: oklch(62% 0.18 188 / 0.35);
-      --text:       #e6eeff;
-      --text-muted: #7a8daa;
-      --text-dim:   #4a5c78;
-      --border:     rgba(100,140,255,0.10);
-      --border-bright: rgba(100,140,255,0.22);
+      --navy:         #0B1F3A;
+      --navy-mid:     #0e2646;
+      --navy-card:    #102b4e;
+      --teal:         #028090;
+      --teal-light:   #02C39A;
+      --teal-glow:    rgba(2,128,144,0.22);
+      --teal2-glow:   rgba(2,195,154,0.18);
+      --text:         #EEF3FA;
+      --text-muted:   #8BA5C2;
+      --text-dim:     #4a6580;
+      --border:       rgba(255,255,255,0.07);
+      --border-mid:   rgba(255,255,255,0.11);
+      --border-teal:  rgba(2,128,144,0.30);
+      --card:         rgba(14,38,70,0.7);
     }
 
     html { scroll-behavior: smooth; }
-
     body {
       font-family: 'DM Sans', sans-serif;
-      background: var(--bg-deep);
+      background: var(--navy);
       color: var(--text);
       overflow-x: hidden;
-      line-height: 1.6;
+      line-height: 1.65;
     }
+    h1,h2,h3,h4 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
+    ::selection { background: var(--teal); color: #fff; }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--navy); }
+    ::-webkit-scrollbar-thumb { background: var(--teal); border-radius: 3px; }
 
-    h1,h2,h3,h4,h5 { font-family: 'Outfit', sans-serif; }
-
-    ::selection { background: var(--accent); color: #fff; }
-
-    /* Scrollbar */
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: var(--bg-deep); }
-    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
-
-    /* Canvas */
-    #hero-canvas {
-      position: absolute; inset: 0; width: 100%; height: 100%;
-      pointer-events: none; z-index: 0;
-    }
-
-    /* Utility */
-    .section-tag {
-      display: inline-flex; align-items: center; gap: 8px;
-      font-family: 'Outfit', sans-serif;
-      font-size: 11px; font-weight: 600; letter-spacing: 0.12em;
-      text-transform: uppercase; color: var(--accent);
-      background: oklch(62% 0.20 232 / 0.10);
-      border: 1px solid oklch(62% 0.20 232 / 0.25);
-      padding: 6px 14px; border-radius: 100px;
-    }
-    .section-tag::before {
-      content: ''; display: block; width: 6px; height: 6px;
-      border-radius: 50%; background: var(--accent);
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0%,100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(0.7); }
-    }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(32px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; } to { opacity: 1; }
-    }
-
-    @keyframes shimmer {
-      0% { background-position: -200% center; }
-      100% { background-position: 200% center; }
-    }
+    /* ── Animations ── */
+    @keyframes fadeUp   { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes fadeIn   { from { opacity:0; } to { opacity:1; } }
+    @keyframes pulse    { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:.4;transform:scale(.65);} }
+    @keyframes ticker   { 0%{transform:translateX(0);} 100%{transform:translateX(-50%);} }
+    @keyframes float    { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-10px);} }
+    @keyframes shimmer  { 0%{background-position:-200% center;} 100%{background-position:200% center;} }
 
     .reveal {
-      opacity: 0; transform: translateY(40px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
+      opacity: 0; transform: translateY(32px);
+      transition: opacity .65s ease, transform .65s ease;
     }
-    .reveal.visible {
-      opacity: 1; transform: translateY(0);
+    .reveal.visible { opacity:1; transform:translateY(0); }
+    .pop > * {
+      opacity:0; transform:translateY(24px) scale(.97);
+      transition: opacity .5s cubic-bezier(.34,1.4,.64,1), transform .5s cubic-bezier(.34,1.4,.64,1);
     }
+    .pop.visible > * { opacity:1; transform:none; }
+    .pop.visible > *:nth-child(1){transition-delay:.00s}
+    .pop.visible > *:nth-child(2){transition-delay:.07s}
+    .pop.visible > *:nth-child(3){transition-delay:.14s}
+    .pop.visible > *:nth-child(4){transition-delay:.21s}
+    .pop.visible > *:nth-child(5){transition-delay:.28s}
+    .pop.visible > *:nth-child(6){transition-delay:.35s}
+    .pop.visible > *:nth-child(7){transition-delay:.42s}
+    .pop.visible > *:nth-child(8){transition-delay:.49s}
 
-    /* Pop-up child animations */
-    .pop-children > * {
-      opacity: 0;
-      transform: translateY(36px) scale(0.96);
-      transition: opacity 0.55s cubic-bezier(0.34,1.56,0.64,1),
-                  transform 0.55s cubic-bezier(0.34,1.56,0.64,1);
+    /* ── Utilities ── */
+    .chip {
+      display:inline-flex; align-items:center; gap:7px;
+      font-family:'Outfit',sans-serif; font-size:11px; font-weight:600;
+      letter-spacing:.11em; text-transform:uppercase;
+      color:var(--teal-light); background:rgba(2,195,154,.08);
+      border:1px solid rgba(2,195,154,.22); padding:5px 13px; border-radius:100px;
     }
-    .pop-children.visible > * {
-      opacity: 1;
-      transform: translateY(0) scale(1);
+    .chip::before { content:''; width:5px; height:5px; border-radius:50%; background:var(--teal-light); animation:pulse 2s infinite; }
+    .g-text {
+      background:linear-gradient(130deg,var(--teal) 0%,var(--teal-light) 100%);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
     }
-    /* stagger delays 1–12 */
-    .pop-children.visible > *:nth-child(1)  { transition-delay: 0.00s; }
-    .pop-children.visible > *:nth-child(2)  { transition-delay: 0.08s; }
-    .pop-children.visible > *:nth-child(3)  { transition-delay: 0.16s; }
-    .pop-children.visible > *:nth-child(4)  { transition-delay: 0.24s; }
-    .pop-children.visible > *:nth-child(5)  { transition-delay: 0.32s; }
-    .pop-children.visible > *:nth-child(6)  { transition-delay: 0.40s; }
-    .pop-children.visible > *:nth-child(7)  { transition-delay: 0.48s; }
-    .pop-children.visible > *:nth-child(8)  { transition-delay: 0.56s; }
-    .pop-children.visible > *:nth-child(9)  { transition-delay: 0.64s; }
-    .pop-children.visible > *:nth-child(10) { transition-delay: 0.72s; }
-    .pop-children.visible > *:nth-child(11) { transition-delay: 0.80s; }
-    .pop-children.visible > *:nth-child(12) { transition-delay: 0.88s; }
+    section { padding:96px 5%; }
+    .wrap { max-width:1160px; margin:0 auto; }
+    .sec-hd { text-align:center; margin-bottom:60px; }
+    .sec-hd h2 { font-size:clamp(28px,3.6vw,48px); font-weight:700; letter-spacing:-.03em; margin-top:14px; }
+    .sec-hd p  { color:var(--text-muted); font-size:16px; max-width:500px; margin:14px auto 0; line-height:1.75; }
 
-    /* slide-in from left / right for about section */
-    .slide-left {
-      opacity: 0; transform: translateX(-48px);
-      transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1);
-    }
-    .slide-right {
-      opacity: 0; transform: translateX(48px);
-      transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1);
-      transition-delay: 0.12s;
-    }
-    .slide-left.visible, .slide-right.visible {
-      opacity: 1; transform: translateX(0);
-    }
-
-    /* count-up number flash */
-    @keyframes countFlash {
-      0% { opacity: 0; transform: translateY(12px) scale(0.8); }
-      60% { opacity: 1; transform: translateY(-3px) scale(1.06); }
-      100% { opacity: 1; transform: translateY(0) scale(1); }
-    }
-    .stat.popped .stat-num {
-      animation: countFlash 0.55s cubic-bezier(0.34,1.56,0.64,1) both;
-    }
-    .stat.popped:nth-child(1) .stat-num { animation-delay: 0.00s; }
-    .stat.popped:nth-child(2) .stat-num { animation-delay: 0.10s; }
-    .stat.popped:nth-child(3) .stat-num { animation-delay: 0.20s; }
-    .stat.popped:nth-child(4) .stat-num { animation-delay: 0.30s; }
-
-    /* section header word-by-word */
-    .section-header.reveal h2 .word {
-      display: inline-block;
-      opacity: 0; transform: translateY(20px);
-      transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.34,1.36,0.64,1);
-    }
-    .section-header.reveal.visible h2 .word { opacity: 1; transform: translateY(0); }
-    .section-header.reveal.visible h2 .word:nth-child(1) { transition-delay: 0.05s; }
-    .section-header.reveal.visible h2 .word:nth-child(2) { transition-delay: 0.12s; }
-    .section-header.reveal.visible h2 .word:nth-child(3) { transition-delay: 0.19s; }
-    .section-header.reveal.visible h2 .word:nth-child(4) { transition-delay: 0.26s; }
-    .section-header.reveal.visible h2 .word:nth-child(5) { transition-delay: 0.33s; }
-    .section-header.reveal.visible h2 .word:nth-child(6) { transition-delay: 0.40s; }
-    .section-header.reveal.visible h2 .word:nth-child(7) { transition-delay: 0.47s; }
-    .section-header.reveal.visible h2 .word:nth-child(8) { transition-delay: 0.54s; }
-    .section-header.reveal.visible p {
-      opacity: 0; transform: translateY(12px);
-      transition: opacity 0.5s ease 0.45s, transform 0.5s ease 0.45s;
-    }
-    .section-header.reveal.visible p { opacity: 1; transform: translateY(0); }
-
-    /* pill pop */
-    .about-pills.pop-children > * {
-      transform: translateY(16px) scale(0.9);
-    }
-
-    /* NAV */
+    /* ── NAV ── */
     nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-      padding: 0 5%;
-      display: flex; align-items: center; justify-content: space-between;
-      height: 72px;
-      transition: background 0.4s, backdrop-filter 0.4s, border-color 0.4s;
-      border-bottom: 1px solid transparent;
+      position:fixed; top:0; left:0; right:0; z-index:1000;
+      padding:0 5%; height:68px;
+      display:flex; align-items:center; justify-content:space-between;
+      transition:background .35s, border-color .35s;
+      border-bottom:1px solid transparent;
     }
     nav.scrolled {
-      background: rgba(3,11,24,0.82);
-      backdrop-filter: blur(20px) saturate(180%);
-      border-color: var(--border);
+      background:rgba(11,31,58,.90); backdrop-filter:blur(18px) saturate(160%);
+      border-color:var(--border);
     }
-    .nav-logo {
-      font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 22px;
-      color: var(--text); text-decoration: none; letter-spacing: -0.5px;
-      display: flex; align-items: center; gap: 0px;
-    }
-    .nav-logo-icon { display: flex; align-items: center; }
-    .nav-links {
-      display: flex; gap: 36px; list-style: none;
-    }
-    .nav-links a {
-      color: var(--text-muted); text-decoration: none; font-size: 14px;
-      font-weight: 400; transition: color 0.2s; letter-spacing: 0.01em;
-    }
-    .nav-links a:hover { color: var(--text); }
+    .nav-logo img { height:36px; display:block; border-radius:6px; }
+    .nav-links { display:flex; gap:30px; list-style:none; }
+    .nav-links a { color:var(--text-muted); text-decoration:none; font-size:14px; font-weight:400; transition:color .2s; }
+    .nav-links a:hover { color:var(--text); }
     .nav-cta {
-      background: var(--accent); color: #fff;
-      border: none; padding: 10px 22px; border-radius: 8px;
-      font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 14px;
-      cursor: pointer; transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s;
-      box-shadow: 0 0 20px var(--accent-glow);
+      background:var(--teal); color:#fff; border:none;
+      padding:9px 20px; border-radius:8px; cursor:pointer;
+      font-family:'Outfit',sans-serif; font-weight:600; font-size:14px;
+      transition:background .2s, transform .2s, box-shadow .2s;
+      box-shadow:0 0 18px var(--teal-glow);
     }
-    .nav-cta:hover { opacity: 0.88; transform: translateY(-1px); box-shadow: 0 4px 28px var(--accent-glow); }
+    .nav-cta:hover { background:#029aae; transform:translateY(-1px); box-shadow:0 4px 24px var(--teal-glow); }
+    .mob-btn {
+      display:none; background:none; border:1px solid var(--border-mid);
+      color:var(--text); padding:7px 11px; border-radius:7px; cursor:pointer; font-size:17px;
+    }
 
-    /* HERO */
+    /* ── HERO ── */
     #hero {
-      position: relative; min-height: 100vh;
-      display: flex; align-items: center; justify-content: center;
-      overflow: hidden; padding: 120px 5% 80px;
+      position:relative; min-height:100vh;
+      display:flex; align-items:center; justify-content:center;
+      overflow:hidden; padding:130px 5% 80px;
     }
-    .hero-grid-overlay {
-      position: absolute; inset: 0; z-index: 1;
+    #hero-canvas {
+      position:absolute; inset:0; width:100%; height:100%;
+      pointer-events:none; z-index:0;
+    }
+    .hero-grid {
+      position:absolute; inset:0; z-index:1;
       background-image:
-        linear-gradient(rgba(100,140,255,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(100,140,255,0.04) 1px, transparent 1px);
-      background-size: 60px 60px;
-      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 0%, transparent 80%);
+        linear-gradient(rgba(2,128,144,.04) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(2,128,144,.04) 1px,transparent 1px);
+      background-size:54px 54px;
+      mask-image:radial-gradient(ellipse 75% 80% at 50% 45%,black 0%,transparent 80%);
     }
     .hero-glow {
-      position: absolute; z-index: 1;
-      border-radius: 50%; filter: blur(120px); pointer-events: none;
+      position:absolute; z-index:1; border-radius:50%;
+      filter:blur(110px); pointer-events:none;
     }
-    .hero-glow-1 {
-      width: 600px; height: 600px; top: -100px; left: -100px;
-      background: oklch(62% 0.20 232 / 0.12);
-    }
-    .hero-glow-2 {
-      width: 500px; height: 500px; bottom: -50px; right: -50px;
-      background: oklch(62% 0.18 188 / 0.10);
-    }
-    .hero-content {
-      position: relative; z-index: 2; text-align: center; max-width: 860px;
-    }
-    .hero-badge {
-      animation: fadeIn 0.6s ease both;
-      margin-bottom: 28px; display: inline-block;
-    }
-    .hero-headline {
-      font-family: 'Outfit', sans-serif;
-      font-size: clamp(42px, 6vw, 80px);
-      font-weight: 800; line-height: 1.08; letter-spacing: -0.03em;
-      margin-bottom: 24px;
-      animation: fadeUp 0.8s 0.2s ease both;
-    }
-    .hero-headline .gradient-text {
-      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 60%, #a78bfa 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      background-clip: text;
+    .hero-glow-1 { width:520px; height:520px; top:-80px; left:-80px; background:rgba(2,128,144,.12); }
+    .hero-glow-2 { width:420px; height:420px; bottom:-60px; right:-60px; background:rgba(2,195,154,.09); }
+    .hero-inner { position:relative; z-index:2; text-align:center; max-width:840px; }
+    .hero-h1 {
+      font-size:clamp(38px,5.5vw,72px); font-weight:800;
+      letter-spacing:-.035em; line-height:1.06;
+      margin:22px 0 20px; text-wrap:balance;
+      animation:fadeUp .9s .1s ease both;
     }
     .hero-sub {
-      font-size: clamp(16px, 2vw, 20px); color: var(--text-muted);
-      max-width: 580px; margin: 0 auto 40px; font-weight: 300;
-      animation: fadeUp 0.8s 0.35s ease both;
+      font-size:clamp(15px,1.7vw,18px); color:var(--text-muted);
+      max-width:540px; margin:0 auto 36px; font-weight:300; line-height:1.75;
+      animation:fadeUp .9s .25s ease both;
     }
     .hero-actions {
-      display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
-      animation: fadeUp 0.8s 0.5s ease both;
+      display:flex; gap:12px; justify-content:center; flex-wrap:wrap;
+      animation:fadeUp .9s .38s ease both;
     }
     .btn-primary {
-      padding: 14px 32px; border-radius: 10px; border: none;
-      background: var(--accent); color: #fff;
-      font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 15px;
-      cursor: pointer; transition: all 0.25s;
-      box-shadow: 0 4px 30px var(--accent-glow);
-      display: flex; align-items: center; gap: 8px;
+      padding:13px 28px; border-radius:9px; border:none;
+      background:var(--teal); color:#fff;
+      font-family:'Outfit',sans-serif; font-weight:600; font-size:15px;
+      cursor:pointer; transition:all .25s;
+      box-shadow:0 4px 26px var(--teal-glow);
+      display:inline-flex; align-items:center; gap:8px;
     }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 40px var(--accent-glow); opacity: 0.9; }
-    .btn-secondary {
-      padding: 14px 32px; border-radius: 10px;
-      border: 1px solid var(--border-bright); background: transparent; color: var(--text);
-      font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 15px;
-      cursor: pointer; transition: all 0.25s;
+    .btn-primary:hover { background:#029aae; transform:translateY(-2px); box-shadow:0 8px 36px var(--teal-glow); }
+    .btn-outline {
+      padding:13px 28px; border-radius:9px;
+      border:1px solid var(--border-mid); background:transparent; color:var(--text);
+      font-family:'Outfit',sans-serif; font-weight:600; font-size:15px;
+      cursor:pointer; transition:all .25s;
     }
-    .btn-secondary:hover { background: rgba(100,140,255,0.08); border-color: oklch(62% 0.20 232 / 0.45); transform: translateY(-2px); }
+    .btn-outline:hover { background:rgba(255,255,255,.05); border-color:var(--border-teal); transform:translateY(-2px); }
 
     .hero-stats {
-      display: flex; justify-content: center; gap: 48px; margin-top: 64px;
-      animation: fadeUp 0.8s 0.65s ease both;
-      padding-top: 40px; border-top: 1px solid var(--border);
+      display:flex; justify-content:center;
+      margin-top:56px; padding-top:36px; border-top:1px solid var(--border);
+      animation:fadeUp .9s .52s ease both;
     }
-    .stat { text-align: center; }
-    .stat-num {
-      font-family: 'Outfit', sans-serif; font-size: 32px; font-weight: 700;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    .hst {
+      flex:1; max-width:170px; text-align:center;
+      padding:0 18px; border-right:1px solid var(--border);
     }
-    .stat-label { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+    .hst:last-child { border-right:none; }
+    .hst-n {
+      font-family:'Outfit',sans-serif; font-size:28px; font-weight:700;
+      background:linear-gradient(135deg,var(--teal),var(--teal-light));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    }
+    .hst-l { font-size:12px; color:var(--text-muted); margin-top:3px; line-height:1.4; }
 
-    /* SECTIONS COMMON */
-    section { padding: 100px 5%; }
-    .section-inner { max-width: 1160px; margin: 0 auto; }
-    .section-header { text-align: center; margin-bottom: 64px; }
-    .section-header h2 {
-      font-size: clamp(32px, 4vw, 52px); font-weight: 700;
-      letter-spacing: -0.03em; margin-top: 16px; line-height: 1.15;
+    /* ── TICKER ── */
+    .ticker-wrap {
+      background:rgba(2,128,144,.06); border-top:1px solid var(--border);
+      border-bottom:1px solid var(--border); overflow:hidden; padding:13px 0;
     }
-    .section-header p {
-      color: var(--text-muted); font-size: 16px; max-width: 520px;
-      margin: 16px auto 0;
+    .ticker-track { display:flex; animation:ticker 30s linear infinite; width:max-content; }
+    .ticker-track:hover { animation-play-state:paused; }
+    .ticker-item {
+      display:flex; align-items:center; gap:9px;
+      padding:0 32px; font-size:12.5px; color:var(--text-muted);
+      font-family:'Outfit',sans-serif; font-weight:500; white-space:nowrap;
     }
+    .ticker-dot { width:4px; height:4px; border-radius:50%; background:var(--teal); flex-shrink:0; }
 
-    /* ABOUT */
-    #about { background: var(--bg-surface); }
-    .about-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 64px;
-      align-items: center;
+    /* ── ABOUT ── */
+    #about { background:var(--navy-mid); }
+    .about-grid { display:grid; grid-template-columns:1fr 1fr; gap:72px; align-items:center; }
+    .about-vis {
+      border-radius:18px; background:var(--card); border:1px solid var(--border);
+      padding:32px; display:flex; flex-direction:column; gap:14px;
     }
-    .about-visual {
-      position: relative; border-radius: 20px; overflow: hidden;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      aspect-ratio: 1 / 1; max-width: 480px;
-      display: flex; align-items: center; justify-content: center;
+    .a-stat-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .a-stat {
+      background:rgba(2,128,144,.07); border:1px solid rgba(2,128,144,.18);
+      border-radius:11px; padding:18px 16px;
     }
-    .about-3d-shape {
-      width: 220px; height: 220px;
-      background: linear-gradient(135deg, oklch(62% 0.20 232 / 0.15), oklch(62% 0.18 188 / 0.1));
-      border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
-      animation: morph 8s ease-in-out infinite;
-      border: 1px solid oklch(62% 0.20 232 / 0.2);
-      box-shadow: inset 0 0 60px oklch(62% 0.20 232 / 0.1), 0 0 80px oklch(62% 0.20 232 / 0.1);
+    .a-stat-n {
+      font-family:'Outfit',sans-serif; font-size:26px; font-weight:700;
+      background:linear-gradient(130deg,var(--teal),var(--teal-light));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
     }
-    @keyframes morph {
-      0%,100% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
-      25% { border-radius: 70% 30% 30% 70% / 70% 70% 30% 30%; }
-      50% { border-radius: 50% 50% 30% 70% / 50% 70% 30% 50%; }
-      75% { border-radius: 30% 70% 70% 30% / 70% 30% 70% 30%; }
+    .a-stat-l { font-size:11.5px; color:var(--text-muted); margin-top:2px; }
+    .cert-row {
+      padding:14px 16px; border-radius:10px;
+      background:rgba(2,195,154,.05); border:1px solid rgba(2,195,154,.18);
     }
-    .about-orb {
-      position: absolute; border-radius: 50%; filter: blur(40px);
+    .cert-lbl { font-size:10.5px; color:var(--teal-light); font-weight:700; letter-spacing:.08em; text-transform:uppercase; margin-bottom:8px; }
+    .cert-pills { display:flex; flex-wrap:wrap; gap:6px; }
+    .cert-pill {
+      padding:3px 9px; border-radius:5px; font-size:11px; font-weight:600;
+      background:rgba(2,195,154,.1); border:1px solid rgba(2,195,154,.22); color:var(--teal-light);
+      font-family:'Outfit',sans-serif;
     }
-    .about-text h2 {
-      font-size: clamp(28px, 3vw, 44px); font-weight: 700; letter-spacing: -0.03em;
-      line-height: 1.2; margin-top: 16px;
-    }
-    .about-text p { color: var(--text-muted); margin-top: 16px; font-size: 15px; line-height: 1.8; }
-    .about-pills {
-      display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px;
-    }
+    .about-txt h2 { font-size:clamp(24px,2.8vw,40px); font-weight:700; letter-spacing:-.03em; margin-top:14px; }
+    .about-txt p { color:var(--text-muted); margin-top:14px; font-size:15px; line-height:1.8; }
+    .about-pills { display:flex; flex-wrap:wrap; gap:8px; margin-top:22px; }
     .pill {
-      padding: 7px 16px; border-radius: 100px; font-size: 13px;
-      border: 1px solid var(--border-bright); color: var(--text-muted);
-      background: var(--bg-card); font-weight: 500;
-      transition: border-color 0.2s, color 0.2s;
+      padding:6px 14px; border-radius:100px; font-size:12.5px; font-weight:500;
+      border:1px solid var(--border-mid); color:var(--text-muted); background:rgba(255,255,255,.03);
+      transition:border-color .2s, color .2s;
     }
-    .pill:hover { border-color: var(--accent); color: var(--text); }
+    .pill:hover { border-color:var(--border-teal); color:var(--text); }
 
-    /* SERVICES */
-    #services { background: var(--bg-deep); }
-    .services-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+    /* ── SERVICES ── */
+    #services { background:var(--navy); }
+    .svc-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+    .svc-card {
+      background:var(--card); border:1px solid var(--border);
+      border-radius:14px; padding:28px 24px; position:relative; overflow:hidden;
+      transition:transform .3s, border-color .3s, box-shadow .3s; cursor:default;
     }
-    .service-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 16px; padding: 32px 28px;
-      cursor: default;
-      transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
-      position: relative; overflow: hidden;
+    .svc-card::after {
+      content:''; position:absolute; inset:0;
+      background:linear-gradient(135deg,rgba(2,128,144,.06),transparent 60%);
+      opacity:0; transition:opacity .3s; border-radius:14px;
     }
-    .service-card::before {
-      content: ''; position: absolute; inset: 0;
-      background: linear-gradient(135deg, var(--accent-glow), transparent 70%);
-      opacity: 0; transition: opacity 0.35s; border-radius: 16px;
+    .svc-card:hover { transform:translateY(-5px); border-color:var(--border-teal); box-shadow:0 12px 36px rgba(2,128,144,.10); }
+    .svc-card:hover::after { opacity:1; }
+    .svc-card:hover .svc-ico { transform:scale(1.08); }
+    .svc-ico {
+      width:44px; height:44px; border-radius:11px;
+      background:rgba(2,128,144,.12); border:1px solid rgba(2,128,144,.24);
+      display:flex; align-items:center; justify-content:center;
+      font-size:19px; margin-bottom:16px; transition:transform .3s;
     }
-    .service-card:hover { transform: translateY(-6px); border-color: var(--border-bright); }
-    .service-card:hover::before { opacity: 1; }
-    .service-card:hover .service-icon-wrap { transform: scale(1.08); }
-    .service-icon-wrap {
-      width: 52px; height: 52px; border-radius: 14px;
-      background: oklch(62% 0.20 232 / 0.12);
-      border: 1px solid oklch(62% 0.20 232 / 0.2);
-      display: flex; align-items: center; justify-content: center;
-      margin-bottom: 20px; font-size: 22px;
-      transition: transform 0.3s;
-    }
-    .service-card h3 { font-size: 18px; font-weight: 600; margin-bottom: 10px; }
-    .service-card p { color: var(--text-muted); font-size: 14px; line-height: 1.75; }
-    .service-card .card-num {
-      position: absolute; top: 20px; right: 24px;
-      font-family: 'Outfit', sans-serif; font-size: 11px; font-weight: 700;
-      color: var(--text-dim); letter-spacing: 0.08em;
-    }
+    .svc-card h3 { font-size:16px; font-weight:600; margin-bottom:8px; }
+    .svc-card p  { color:var(--text-muted); font-size:13.5px; line-height:1.75; }
+    .svc-n { position:absolute; top:16px; right:18px; font-family:'Outfit',sans-serif; font-size:10px; font-weight:700; color:var(--text-dim); letter-spacing:.08em; }
 
-    /* WHY */
-    #why { background: var(--bg-surface); }
-    .why-grid {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
-    }
+    /* ── WHY ── */
+    #why { background:var(--navy-mid); }
+    .why-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
     .why-card {
-      padding: 32px 24px; border-radius: 16px;
-      border: 1px solid var(--border); background: var(--bg-card);
-      text-align: center;
-      transition: transform 0.3s, border-color 0.3s;
+      padding:26px 22px; border-radius:14px;
+      border:1px solid var(--border); background:var(--card);
+      transition:transform .3s, border-color .3s;
     }
-    .why-card:hover { transform: translateY(-4px); border-color: var(--border-bright); }
-    .why-icon {
-      width: 60px; height: 60px; border-radius: 50%;
-      background: linear-gradient(135deg, oklch(62% 0.20 232 / 0.15), oklch(62% 0.18 188 / 0.08));
-      border: 1px solid var(--border-bright);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 24px; margin: 0 auto 20px;
+    .why-card:hover { transform:translateY(-4px); border-color:var(--border-teal); }
+    .why-ico {
+      width:44px; height:44px; border-radius:50%;
+      background:linear-gradient(135deg,rgba(2,128,144,.14),rgba(2,195,154,.07));
+      border:1px solid rgba(2,128,144,.22);
+      display:flex; align-items:center; justify-content:center;
+      font-size:19px; margin-bottom:16px;
     }
-    .why-card h3 { font-size: 17px; font-weight: 600; margin-bottom: 10px; }
-    .why-card p { color: var(--text-muted); font-size: 13px; line-height: 1.7; }
+    .why-card h3 { font-size:15.5px; font-weight:600; margin-bottom:7px; }
+    .why-card p  { color:var(--text-muted); font-size:13.5px; line-height:1.7; }
 
-    /* PORTFOLIO */
-    #portfolio { background: var(--bg-deep); }
-    .portfolio-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+    /* ── CASES ── */
+    #cases { background:var(--navy); }
+    .cases-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+    .case-card {
+      border-radius:14px; overflow:hidden;
+      border:1px solid var(--border); background:var(--card);
+      transition:transform .3s, border-color .3s; display:flex; flex-direction:column;
     }
-    .portfolio-card {
-      border-radius: 16px; overflow: hidden;
-      border: 1px solid var(--border); background: var(--bg-card);
-      transition: transform 0.3s, border-color 0.3s;
-      cursor: pointer;
+    .case-card:hover { transform:translateY(-5px); border-color:var(--border-teal); }
+    .case-thumb {
+      height:172px; position:relative;
+      background:var(--navy-card);
+      display:flex; align-items:center; justify-content:center;
     }
-    .portfolio-card:hover { transform: translateY(-6px); border-color: var(--border-bright); }
-    .portfolio-card:hover .portfolio-img-overlay { opacity: 1; }
-    .portfolio-img {
-      height: 200px; position: relative; overflow: hidden;
-      background: var(--bg-card2);
-      display: flex; align-items: center; justify-content: center;
+    .case-thumb-bg {
+      width:100%; height:100%;
+      background:repeating-linear-gradient(-45deg,transparent,transparent 10px,rgba(2,128,144,.04) 10px,rgba(2,128,144,.04) 20px);
+      display:flex; align-items:center; justify-content:center; flex-direction:column; gap:6px;
     }
-    .portfolio-img-overlay {
-      position: absolute; inset: 0;
-      background: oklch(62% 0.20 232 / 0.15);
-      opacity: 0; transition: opacity 0.3s;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 13px; font-weight: 600; color: var(--accent);
+    .case-thumb-txt {
+      font-size:10px; color:var(--text-dim); letter-spacing:.1em; text-transform:uppercase;
+      font-family:'Outfit',sans-serif; text-align:center; padding:0 18px; line-height:1.6;
     }
-    .portfolio-placeholder {
-      width: 100%; height: 100%;
-      background: repeating-linear-gradient(
-        45deg,
-        transparent, transparent 12px,
-        rgba(100,140,255,0.04) 12px, rgba(100,140,255,0.04) 24px
-      );
-      display: flex; align-items: center; justify-content: center;
+    .case-tag {
+      position:absolute; top:12px; left:12px;
+      font-size:10px; font-weight:700; letter-spacing:.09em; text-transform:uppercase;
+      padding:3px 9px; border-radius:5px;
+      background:rgba(2,128,144,.22); border:1px solid rgba(2,128,144,.4);
+      color:var(--teal-light); font-family:'Outfit',sans-serif;
     }
-    .portfolio-placeholder span {
-      font-size: 11px; color: var(--text-dim); letter-spacing: 0.08em;
-      text-transform: uppercase; font-family: 'Outfit', sans-serif;
+    .case-body { padding:20px 20px 24px; flex:1; display:flex; flex-direction:column; }
+    .case-title { font-size:16px; font-weight:600; margin-bottom:6px; }
+    .case-loc { font-size:11px; color:var(--text-dim); margin-bottom:10px; font-family:'Outfit',sans-serif; font-weight:600; letter-spacing:.05em; text-transform:uppercase; }
+    .case-desc { font-size:13.5px; color:var(--text-muted); line-height:1.7; flex:1; }
+    .case-mods { display:flex; flex-wrap:wrap; gap:5px; margin-top:14px; }
+    .case-mod {
+      font-size:11px; padding:3px 8px; border-radius:5px;
+      background:rgba(255,255,255,.04); border:1px solid var(--border);
+      color:var(--text-muted); font-family:'Outfit',sans-serif; font-weight:500;
     }
-    .portfolio-body { padding: 22px 22px 26px; }
-    .portfolio-tag {
-      font-size: 11px; color: var(--accent); font-weight: 600;
-      letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px;
+    .case-result {
+      margin-top:13px; padding:9px 12px; border-radius:7px;
+      background:rgba(2,195,154,.06); border:1px solid rgba(2,195,154,.18);
+      font-size:12px; color:var(--teal-light); font-weight:500;
+      display:flex; align-items:center; gap:7px;
     }
-    .portfolio-card h3 { font-size: 17px; font-weight: 600; margin-bottom: 8px; }
-    .portfolio-card p { font-size: 13px; color: var(--text-muted); line-height: 1.65; }
+    .case-result::before { content:'✓'; font-weight:700; }
 
-    /* TAGLINES */
-    #taglines { background: var(--bg-surface); }
-    .tagline-list {
-      display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;
-      max-width: 860px; margin: 0 auto;
+    /* ── TEAM ── */
+    #team { background:var(--navy-mid); }
+    .team-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:22px; }
+    .team-card {
+      padding:30px 24px; border-radius:14px;
+      border:1px solid var(--border); background:var(--card); text-align:center;
+      transition:transform .3s, border-color .3s;
     }
-    .tagline-item {
-      padding: 22px 26px; border-radius: 12px;
-      border: 1px solid var(--border); background: var(--bg-card);
-      display: flex; align-items: flex-start; gap: 14px;
-      transition: border-color 0.3s, transform 0.25s;
+    .team-card:hover { transform:translateY(-4px); border-color:var(--border-teal); }
+    .team-av {
+      width:68px; height:68px; border-radius:50%; margin:0 auto 16px;
+      background:linear-gradient(135deg,var(--teal),var(--teal-light));
+      display:flex; align-items:center; justify-content:center;
+      font-family:'Outfit',sans-serif; font-size:22px; font-weight:700; color:#fff;
+      border:2px solid rgba(2,195,154,.28);
     }
-    .tagline-item:hover { border-color: var(--border-bright); transform: translateX(4px); }
-    .tagline-num {
-      font-family: 'Outfit', sans-serif; font-size: 11px; font-weight: 700;
-      color: var(--accent); background: oklch(62% 0.20 232 / 0.1);
-      border-radius: 6px; padding: 4px 8px; flex-shrink: 0; margin-top: 2px;
+    .team-name { font-size:16px; font-weight:700; margin-bottom:3px; }
+    .team-role { font-size:11px; color:var(--teal-light); font-weight:600; letter-spacing:.06em; text-transform:uppercase; margin-bottom:12px; }
+    .team-bio  { font-size:13.5px; color:var(--text-muted); line-height:1.7; }
+    .team-creds { display:flex; flex-wrap:wrap; gap:5px; margin-top:14px; justify-content:center; }
+    .team-cred {
+      font-size:11px; padding:3px 8px; border-radius:5px;
+      background:rgba(2,128,144,.09); border:1px solid rgba(2,128,144,.2);
+      color:var(--text-muted); font-family:'Outfit',sans-serif; font-weight:500;
     }
-    .tagline-item p { font-size: 15px; font-weight: 500; color: var(--text); }
 
-    /* CONTACT */
-    #contact { background: var(--bg-deep); }
-    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; }
-    .contact-info h2 {
-      font-size: clamp(28px, 3vw, 44px); font-weight: 700;
-      letter-spacing: -0.03em; line-height: 1.2; margin-bottom: 16px;
+    /* ── PARTNER SECTION ── */
+    #partners {
+      background:linear-gradient(160deg, #061628 0%, #0a2240 50%, #061e38 100%);
+      position:relative; overflow:hidden;
     }
-    .contact-info p { color: var(--text-muted); font-size: 15px; margin-bottom: 36px; }
-    .contact-detail {
-      display: flex; gap: 14px; margin-bottom: 20px; align-items: flex-start;
+    #partners::before {
+      content:''; position:absolute; inset:0;
+      background:
+        radial-gradient(ellipse 60% 50% at 80% 50%, rgba(2,128,144,.12) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 40% at 20% 50%, rgba(2,195,154,.07) 0%, transparent 60%);
+      pointer-events:none;
     }
-    .contact-detail-icon {
-      width: 42px; height: 42px; border-radius: 10px; flex-shrink: 0;
-      background: oklch(62% 0.20 232 / 0.10); border: 1px solid var(--border-bright);
-      display: flex; align-items: center; justify-content: center; font-size: 16px;
+    #partners .wrap { position:relative; z-index:1; }
+    .partner-grid { display:grid; grid-template-columns:1fr 1fr; gap:72px; align-items:center; }
+    .partner-left h2 { font-size:clamp(26px,3.2vw,44px); font-weight:700; letter-spacing:-.03em; margin-top:14px; line-height:1.1; }
+    .partner-left p  { color:var(--text-muted); font-size:15px; margin-top:16px; line-height:1.8; }
+    .partner-quote {
+      margin-top:28px; padding:20px 22px 20px 22px;
+      border-radius:12px; border-left:3px solid var(--teal-light);
+      background:rgba(2,195,154,.06);
     }
-    .contact-detail-text strong { font-size: 13px; color: var(--text-muted); font-weight: 400; display: block; margin-bottom: 2px; }
-    .contact-detail-text span { font-size: 14px; color: var(--text); }
+    .partner-quote p { font-size:15px; font-style:italic; color:var(--text); margin:0; font-weight:500; line-height:1.7; }
+    .partner-actions { display:flex; gap:12px; flex-wrap:wrap; margin-top:32px; }
 
-    form { display: flex; flex-direction: column; gap: 16px; }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    .form-group { display: flex; flex-direction: column; gap: 6px; }
-    .form-group label { font-size: 12px; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.07em; }
-    .form-group input, .form-group textarea, .form-group select {
-      background: var(--bg-card); border: 1px solid var(--border-bright);
-      border-radius: 10px; padding: 12px 16px; color: var(--text);
-      font-family: 'DM Sans', sans-serif; font-size: 14px;
-      outline: none; transition: border-color 0.2s, box-shadow 0.2s;
-      resize: none;
+    .partner-right { display:flex; flex-direction:column; gap:14px; }
+    .p-feat {
+      display:flex; gap:16px; align-items:flex-start;
+      padding:18px 20px; border-radius:12px;
+      border:1px solid var(--border); background:rgba(14,38,70,.5);
+      transition:border-color .25s, transform .25s;
     }
-    .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
-      border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow);
+    .p-feat:hover { border-color:var(--border-teal); transform:translateX(4px); }
+    .p-feat-ico {
+      width:40px; height:40px; border-radius:10px; flex-shrink:0;
+      background:rgba(2,128,144,.12); border:1px solid rgba(2,128,144,.22);
+      display:flex; align-items:center; justify-content:center; font-size:17px;
     }
-    .form-group input::placeholder, .form-group textarea::placeholder { color: var(--text-dim); }
-    .form-group select option { background: var(--bg-card); }
-    .form-group textarea { min-height: 120px; }
+    .p-feat-txt h4 { font-size:14px; font-weight:600; margin-bottom:3px; }
+    .p-feat-txt p  { font-size:13px; color:var(--text-muted); line-height:1.6; }
+    .partner-logos {
+      margin-top:6px; padding:16px 20px; border-radius:12px;
+      border:1px solid rgba(2,195,154,.18); background:rgba(2,195,154,.04);
+      display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+    }
+    .partner-logos-lbl { font-size:11px; font-weight:700; color:var(--teal-light); letter-spacing:.08em; text-transform:uppercase; }
+    .partner-flag {
+      padding:4px 10px; border-radius:6px; font-size:12px; font-weight:600;
+      background:rgba(2,195,154,.1); border:1px solid rgba(2,195,154,.2);
+      color:var(--text-muted); font-family:'Outfit',sans-serif;
+    }
 
-    .form-submit {
-      width: 100%; padding: 14px; border-radius: 10px; border: none;
-      background: var(--accent); color: #fff;
-      font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 16px;
-      cursor: pointer; transition: all 0.25s;
-      box-shadow: 0 4px 24px var(--accent-glow);
+    /* ── CTA BAND ── */
+    .cta-band {
+      background:linear-gradient(130deg,rgba(2,128,144,.13),rgba(2,195,154,.07));
+      border-top:1px solid rgba(2,128,144,.18); border-bottom:1px solid rgba(2,128,144,.18);
+      padding:64px 5%; text-align:center;
     }
-    .form-submit:hover { opacity: 0.88; transform: translateY(-2px); box-shadow: 0 8px 36px var(--accent-glow); }
-    .form-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .cta-band h2 { font-size:clamp(24px,3vw,42px); font-weight:700; letter-spacing:-.03em; margin-bottom:14px; }
+    .cta-band p  { color:var(--text-muted); font-size:16px; max-width:460px; margin:0 auto 30px; line-height:1.75; }
+    .cta-band-btns { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
 
-    .form-success {
-      text-align: center; padding: 48px 24px;
-      animation: fadeUp 0.5s ease both;
+    /* ── CONTACT ── */
+    #contact { background:var(--navy); }
+    .contact-grid { display:grid; grid-template-columns:1fr 1fr; gap:64px; }
+    .contact-left h2 { font-size:clamp(24px,2.8vw,38px); font-weight:700; letter-spacing:-.03em; margin-top:14px; }
+    .contact-left p  { color:var(--text-muted); font-size:15px; margin-top:14px; line-height:1.8; }
+    .cdetails { display:flex; flex-direction:column; gap:14px; margin-top:28px; }
+    .cdet { display:flex; gap:13px; align-items:flex-start; }
+    .cdet-ico {
+      width:38px; height:38px; border-radius:9px; flex-shrink:0;
+      background:rgba(2,128,144,.09); border:1px solid rgba(2,128,144,.2);
+      display:flex; align-items:center; justify-content:center; font-size:14px;
     }
-    .form-success .check {
-      width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 20px;
-      background: oklch(62% 0.18 188 / 0.15); border: 1px solid oklch(62% 0.18 188 / 0.4);
-      display: flex; align-items: center; justify-content: center; font-size: 28px;
+    .cdet-txt strong { font-size:11px; color:var(--text-muted); font-weight:600; display:block; margin-bottom:1px; text-transform:uppercase; letter-spacing:.06em; }
+    .cdet-txt span { font-size:14px; color:var(--text); }
+    .cdet-txt a { color:var(--teal-light); text-decoration:none; }
+    .cdet-txt a:hover { text-decoration:underline; }
+    .cal-btn {
+      display:flex; align-items:center; gap:12px;
+      margin-top:24px; padding:13px 18px; border-radius:10px;
+      border:1px solid rgba(2,195,154,.28); background:rgba(2,195,154,.05);
+      color:var(--text); cursor:pointer; text-decoration:none;
+      font-family:'Outfit',sans-serif; font-size:14px; font-weight:600;
+      transition:background .2s, border-color .2s, transform .2s;
     }
-    .form-success h3 { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
-    .form-success p { color: var(--text-muted); font-size: 14px; }
+    .cal-btn:hover { background:rgba(2,195,154,.09); border-color:rgba(2,195,154,.45); transform:translateY(-1px); }
 
-    /* FOOTER */
-    footer {
-      background: var(--bg-surface); border-top: 1px solid var(--border);
-      padding: 60px 5% 36px;
+    form { display:flex; flex-direction:column; gap:13px; }
+    .frow { display:grid; grid-template-columns:1fr 1fr; gap:13px; }
+    .fg { display:flex; flex-direction:column; gap:5px; }
+    .fg label { font-size:11px; color:var(--text-muted); font-weight:600; text-transform:uppercase; letter-spacing:.08em; }
+    .fg input, .fg textarea, .fg select {
+      background:rgba(255,255,255,.04); border:1px solid var(--border-mid);
+      border-radius:9px; padding:11px 14px; color:var(--text);
+      font-family:'DM Sans',sans-serif; font-size:14px;
+      outline:none; transition:border-color .2s, box-shadow .2s; resize:none;
     }
-    .footer-inner { max-width: 1160px; margin: 0 auto; }
+    .fg input:focus, .fg textarea:focus, .fg select:focus {
+      border-color:var(--teal); box-shadow:0 0 0 3px rgba(2,128,144,.17);
+    }
+    .fg input::placeholder, .fg textarea::placeholder { color:var(--text-dim); }
+    .fg select option { background:var(--navy-mid); color:var(--text); }
+    .fg textarea { min-height:108px; }
+    .f-submit {
+      width:100%; padding:13px; border-radius:9px; border:none;
+      background:var(--teal); color:#fff;
+      font-family:'Outfit',sans-serif; font-weight:600; font-size:15px;
+      cursor:pointer; transition:all .25s; box-shadow:0 4px 22px var(--teal-glow);
+    }
+    .f-submit:hover { background:#029aae; transform:translateY(-2px); box-shadow:0 8px 32px var(--teal-glow); }
+    .f-submit:disabled { opacity:.55; cursor:not-allowed; transform:none; }
+    .f-success { text-align:center; padding:44px 16px; animation:fadeUp .5s ease both; }
+    .f-check {
+      width:56px; height:56px; border-radius:50%; margin:0 auto 16px;
+      background:rgba(2,195,154,.1); border:1px solid rgba(2,195,154,.35);
+      display:flex; align-items:center; justify-content:center; font-size:22px;
+    }
+
+/* ── FLOATING CALENDLY BUTTON ── */
+    .cal-float {
+      position: fixed; bottom: 28px; right: 28px; z-index: 999;
+      display: flex; align-items: center; gap: 10px;
+      background: linear-gradient(135deg, var(--teal) 0%, var(--teal-light) 100%);
+      color: #fff; border: none; border-radius: 50px;
+      padding: 13px 22px; cursor: pointer;
+      font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 14px;
+      box-shadow: 0 6px 32px rgba(2,128,144,0.45), 0 2px 8px rgba(0,0,0,0.25);
+      transition: transform 0.25s, box-shadow 0.25s;
+      animation: fadeUp 0.8s 1s ease both;
+      text-decoration: none;
+    }
+    .cal-float:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 12px 44px rgba(2,128,144,0.55); }
+    .cal-float-icon { font-size: 18px; }
+    @media(max-width:640px){ .cal-float { padding: 11px 16px; font-size: 13px; bottom: 16px; right: 16px; } }
+    footer { background:rgba(6,16,30,.98); border-top:1px solid var(--border); padding:52px 5% 28px; }
+    .footer-inner { max-width:1160px; margin:0 auto; }
     .footer-top {
-      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px;
-      padding-bottom: 48px; border-bottom: 1px solid var(--border);
+      display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:44px;
+      padding-bottom:44px; border-bottom:1px solid var(--border);
     }
-    .footer-brand p { color: var(--text-muted); font-size: 14px; margin-top: 14px; max-width: 260px; line-height: 1.7; }
-    .footer-col h4 {
-      font-size: 13px; font-weight: 600; text-transform: uppercase;
-      letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 16px;
+    .footer-brand img { height:32px; border-radius:5px; }
+    .footer-brand p { color:var(--text-muted); font-size:13.5px; margin-top:12px; max-width:230px; line-height:1.7; }
+    .footer-col h4 { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.1em; color:var(--text-muted); margin-bottom:12px; }
+    .footer-col ul { list-style:none; display:flex; flex-direction:column; gap:8px; }
+    .footer-col ul a { color:var(--text-dim); text-decoration:none; font-size:14px; transition:color .2s; }
+    .footer-col ul a:hover { color:var(--text); }
+    .footer-btm {
+      display:flex; justify-content:space-between; align-items:center;
+      padding-top:24px; font-size:12px; color:var(--text-dim); flex-wrap:wrap; gap:10px;
     }
-    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
-    .footer-col ul a {
-      color: var(--text-muted); text-decoration: none; font-size: 14px;
-      transition: color 0.2s;
-    }
-    .footer-col ul a:hover { color: var(--text); }
-    .footer-bottom {
-      display: flex; justify-content: space-between; align-items: center;
-      padding-top: 28px; font-size: 13px; color: var(--text-dim);
-      flex-wrap: wrap; gap: 12px;
-    }
-    .footer-bottom a { color: var(--accent); text-decoration: none; }
+    .footer-btm a { color:var(--teal); text-decoration:none; }
+    .divider { height:1px; background:linear-gradient(90deg,transparent,var(--border-mid),transparent); margin:0 5%; }
 
-    /* MOBILE NAV */
-    .mobile-menu-btn {
-      display: none; background: none; border: 1px solid var(--border-bright);
-      color: var(--text); padding: 8px 12px; border-radius: 8px; cursor: pointer;
-      font-size: 18px;
+    /* ── RESPONSIVE ── */
+    @media(max-width:960px){
+      .svc-grid,.why-grid,.cases-grid { grid-template-columns:1fr 1fr; }
+      .team-grid { grid-template-columns:1fr 1fr; }
+      .about-grid,.contact-grid,.partner-grid { grid-template-columns:1fr; }
+      .footer-top { grid-template-columns:1fr 1fr; }
     }
-
-    /* DIVIDER */
-    .section-divider {
-      height: 1px; background: linear-gradient(90deg, transparent, var(--border-bright), transparent);
-      margin: 0 5%;
-    }
-
-    /* Number badge */
-    .num-badge {
-      display: inline-flex; align-items: center; justify-content: center;
-      width: 28px; height: 28px; border-radius: 8px;
-      background: oklch(62% 0.20 232 / 0.12);
-      border: 1px solid oklch(62% 0.20 232 / 0.2);
-      font-family: 'Outfit', sans-serif; font-size: 11px; font-weight: 700; color: var(--accent);
-    }
-
-    /* RESPONSIVE */
-    @media (max-width: 900px) {
-      .services-grid { grid-template-columns: 1fr 1fr; }
-      .why-grid { grid-template-columns: 1fr 1fr; }
-      .portfolio-grid { grid-template-columns: 1fr 1fr; }
-      .about-grid { grid-template-columns: 1fr; }
-      .about-visual { max-width: 100%; aspect-ratio: 16/9; }
-      .contact-grid { grid-template-columns: 1fr; }
-      .footer-top { grid-template-columns: 1fr 1fr; }
-      .tagline-list { grid-template-columns: 1fr; }
-    }
-    @media (max-width: 640px) {
-      .nav-links, .nav-cta { display: none; }
-      .mobile-menu-btn { display: block; }
-      .services-grid { grid-template-columns: 1fr; }
-      .why-grid { grid-template-columns: 1fr; }
-      .portfolio-grid { grid-template-columns: 1fr; }
-      .form-row { grid-template-columns: 1fr; }
-      .footer-top { grid-template-columns: 1fr; }
-      .hero-stats { gap: 28px; flex-wrap: wrap; }
+    @media(max-width:640px){
+      .nav-links,.nav-cta { display:none; }
+      .mob-btn { display:block; }
+      .svc-grid,.why-grid,.cases-grid,.team-grid { grid-template-columns:1fr; }
+      .frow { grid-template-columns:1fr; }
+      .footer-top { grid-template-columns:1fr; }
+      .hero-stats { flex-wrap:wrap; }
+      .hst { min-width:45%; }
     }
   </style>
 </head>
 <body>
-
-<!-- THREE.JS CANVAS GOES INTO HERO -->
-
 <div id="root"></div>
-
 <script type="text/babel">
 // ── tweaks-panel (inlined) ───────────────────────────────────────────────────
 
@@ -652,9 +571,11 @@ const __TWEAKS_STYLE = `
     color:rgba(41,38,27,.72)}
   .twk-lbl>span:first-child{font-weight:500}
   .twk-val{color:rgba(41,38,27,.5);font-variant-numeric:tabular-nums}
+
   .twk-sect{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
     color:rgba(41,38,27,.45);padding:10px 0 0}
   .twk-sect:first-child{padding-top:0}
+
   .twk-field{appearance:none;width:100%;height:26px;padding:0 8px;
     border:.5px solid rgba(0,0,0,.1);border-radius:7px;
     background:rgba(255,255,255,.6);color:inherit;font:inherit;outline:none}
@@ -662,6 +583,7 @@ const __TWEAKS_STYLE = `
   select.twk-field{padding-right:22px;
     background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path fill='rgba(0,0,0,.5)' d='M0 0h10L5 6z'/></svg>");
     background-repeat:no-repeat;background-position:right 8px center}
+
   .twk-slider{appearance:none;-webkit-appearance:none;width:100%;height:4px;margin:6px 0;
     border-radius:999px;background:rgba(0,0,0,.12);outline:none}
   .twk-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;
@@ -669,6 +591,7 @@ const __TWEAKS_STYLE = `
     border:.5px solid rgba(0,0,0,.12);box-shadow:0 1px 3px rgba(0,0,0,.2);cursor:default}
   .twk-slider::-moz-range-thumb{width:14px;height:14px;border-radius:50%;
     background:#fff;border:.5px solid rgba(0,0,0,.12);box-shadow:0 1px 3px rgba(0,0,0,.2);cursor:default}
+
   .twk-seg{position:relative;display:flex;padding:2px;border-radius:8px;
     background:rgba(0,0,0,.06);user-select:none}
   .twk-seg-thumb{position:absolute;top:2px;bottom:2px;border-radius:6px;
@@ -677,13 +600,16 @@ const __TWEAKS_STYLE = `
   .twk-seg.dragging .twk-seg-thumb{transition:none}
   .twk-seg button{appearance:none;position:relative;z-index:1;flex:1;border:0;
     background:transparent;color:inherit;font:inherit;font-weight:500;min-height:22px;
-    border-radius:6px;cursor:default;padding:4px 6px;line-height:1.2;overflow-wrap:anywhere}
+    border-radius:6px;cursor:default;padding:4px 6px;line-height:1.2;
+    overflow-wrap:anywhere}
+
   .twk-toggle{position:relative;width:32px;height:18px;border:0;border-radius:999px;
     background:rgba(0,0,0,.15);transition:background .15s;cursor:default;padding:0}
   .twk-toggle[data-on="1"]{background:#34c759}
   .twk-toggle i{position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;
     background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform .15s}
   .twk-toggle[data-on="1"] i{transform:translateX(14px)}
+
   .twk-num{display:flex;align-items:center;height:26px;padding:0 0 0 8px;
     border:.5px solid rgba(0,0,0,.1);border-radius:7px;background:rgba(255,255,255,.6)}
   .twk-num-lbl{font-weight:500;color:rgba(41,38,27,.6);cursor:ew-resize;
@@ -694,11 +620,13 @@ const __TWEAKS_STYLE = `
   .twk-num input::-webkit-inner-spin-button,.twk-num input::-webkit-outer-spin-button{
     -webkit-appearance:none;margin:0}
   .twk-num-unit{padding-right:8px;color:rgba(41,38,27,.45)}
+
   .twk-btn{appearance:none;height:26px;padding:0 12px;border:0;border-radius:7px;
     background:rgba(0,0,0,.78);color:#fff;font:inherit;font-weight:500;cursor:default}
   .twk-btn:hover{background:rgba(0,0,0,.88)}
   .twk-btn.secondary{background:rgba(0,0,0,.06);color:inherit}
   .twk-btn.secondary:hover{background:rgba(0,0,0,.1)}
+
   .twk-swatch{appearance:none;-webkit-appearance:none;width:56px;height:22px;
     border:.5px solid rgba(0,0,0,.1);border-radius:6px;padding:0;cursor:default;
     background:transparent;flex-shrink:0}
@@ -723,6 +651,7 @@ function TweaksPanel({ title = 'Tweaks', children }) {
   const dragRef = React.useRef(null);
   const offsetRef = React.useRef({ x: 16, y: 16 });
   const PAD = 16;
+
   const clampToViewport = React.useCallback(() => {
     const panel = dragRef.current;
     if (!panel) return;
@@ -736,6 +665,7 @@ function TweaksPanel({ title = 'Tweaks', children }) {
     panel.style.right = offsetRef.current.x + 'px';
     panel.style.bottom = offsetRef.current.y + 'px';
   }, []);
+
   React.useEffect(() => {
     if (!open) return;
     clampToViewport();
@@ -747,6 +677,7 @@ function TweaksPanel({ title = 'Tweaks', children }) {
     ro.observe(document.documentElement);
     return () => ro.disconnect();
   }, [open, clampToViewport]);
+
   React.useEffect(() => {
     const onMsg = (e) => {
       const t = e?.data?.type;
@@ -757,10 +688,12 @@ function TweaksPanel({ title = 'Tweaks', children }) {
     window.parent.postMessage({ type: '__edit_mode_available' }, '*');
     return () => window.removeEventListener('message', onMsg);
   }, []);
+
   const dismiss = () => {
     setOpen(false);
     window.parent.postMessage({ type: '__edit_mode_dismissed' }, '*');
   };
+
   const onDragStart = (e) => {
     const panel = dragRef.current;
     if (!panel) return;
@@ -769,21 +702,31 @@ function TweaksPanel({ title = 'Tweaks', children }) {
     const startRight = window.innerWidth - r.right;
     const startBottom = window.innerHeight - r.bottom;
     const move = (ev) => {
-      offsetRef.current = { x: startRight - (ev.clientX - sx), y: startBottom - (ev.clientY - sy) };
+      offsetRef.current = {
+        x: startRight - (ev.clientX - sx),
+        y: startBottom - (ev.clientY - sy),
+      };
       clampToViewport();
     };
-    const up = () => { window.removeEventListener('mousemove', move); window.removeEventListener('mouseup', up); };
+    const up = () => {
+      window.removeEventListener('mousemove', move);
+      window.removeEventListener('mouseup', up);
+    };
     window.addEventListener('mousemove', move);
     window.addEventListener('mouseup', up);
   };
+
   if (!open) return null;
   return (
     <>
       <style>{__TWEAKS_STYLE}</style>
-      <div ref={dragRef} className="twk-panel" style={{ right: offsetRef.current.x, bottom: offsetRef.current.y }}>
+      <div ref={dragRef} className="twk-panel" data-noncommentable=""
+           style={{ right: offsetRef.current.x, bottom: offsetRef.current.y }}>
         <div className="twk-hd" onMouseDown={onDragStart}>
           <b>{title}</b>
-          <button className="twk-x" aria-label="Close tweaks" onMouseDown={(e) => e.stopPropagation()} onClick={dismiss}>✕</button>
+          <button className="twk-x" aria-label="Close tweaks"
+                  onMouseDown={(e) => e.stopPropagation()}
+                  onClick={dismiss}>✕</button>
         </div>
         <div className="twk-body">{children}</div>
       </div>
@@ -792,7 +735,12 @@ function TweaksPanel({ title = 'Tweaks', children }) {
 }
 
 function TweakSection({ label, children }) {
-  return (<><div className="twk-sect">{label}</div>{children}</>);
+  return (
+    <>
+      <div className="twk-sect">{label}</div>
+      {children}
+    </>
+  );
 }
 
 function TweakRow({ label, value, children, inline = false }) {
@@ -821,8 +769,71 @@ function TweakToggle({ label, value, onChange }) {
     <div className="twk-row twk-row-h">
       <div className="twk-lbl"><span>{label}</span></div>
       <button type="button" className="twk-toggle" data-on={value ? '1' : '0'}
-              role="switch" aria-checked={!!value} onClick={() => onChange(!value)}><i /></button>
+              role="switch" aria-checked={!!value}
+              onClick={() => onChange(!value)}><i /></button>
     </div>
+  );
+}
+
+function TweakRadio({ label, value, options, onChange }) {
+  const trackRef = React.useRef(null);
+  const [dragging, setDragging] = React.useState(false);
+  const opts = options.map((o) => (typeof o === 'object' ? o : { value: o, label: o }));
+  const idx = Math.max(0, opts.findIndex((o) => o.value === value));
+  const n = opts.length;
+  const valueRef = React.useRef(value);
+  valueRef.current = value;
+  const segAt = (clientX) => {
+    const r = trackRef.current.getBoundingClientRect();
+    const inner = r.width - 4;
+    const i = Math.floor(((clientX - r.left - 2) / inner) * n);
+    return opts[Math.max(0, Math.min(n - 1, i))].value;
+  };
+  const onPointerDown = (e) => {
+    setDragging(true);
+    const v0 = segAt(e.clientX);
+    if (v0 !== valueRef.current) onChange(v0);
+    const move = (ev) => {
+      if (!trackRef.current) return;
+      const v = segAt(ev.clientX);
+      if (v !== valueRef.current) onChange(v);
+    };
+    const up = () => {
+      setDragging(false);
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+  };
+  return (
+    <TweakRow label={label}>
+      <div ref={trackRef} role="radiogroup" onPointerDown={onPointerDown}
+           className={dragging ? 'twk-seg dragging' : 'twk-seg'}>
+        <div className="twk-seg-thumb"
+             style={{ left: `calc(2px + ${idx} * (100% - 4px) / ${n})`,
+                      width: `calc((100% - 4px) / ${n})` }} />
+        {opts.map((o) => (
+          <button key={o.value} type="button" role="radio" aria-checked={o.value === value}>
+            {o.label}
+          </button>
+        ))}
+      </div>
+    </TweakRow>
+  );
+}
+
+function TweakSelect({ label, value, options, onChange }) {
+  return (
+    <TweakRow label={label}>
+      <select className="twk-field" value={value} onChange={(e) => onChange(e.target.value)}>
+        {options.map((o) => {
+          const v = typeof o === 'object' ? o.value : o;
+          const l = typeof o === 'object' ? o.label : o;
+          return <option key={v} value={v}>{l}</option>;
+        })}
+      </select>
+    </TweakRow>
   );
 }
 
@@ -834,25 +845,74 @@ function TweakText({ label, value, placeholder, onChange }) {
     </TweakRow>
   );
 }
+
+function TweakNumber({ label, value, min, max, step = 1, unit = '', onChange }) {
+  const clamp = (n) => {
+    if (min != null && n < min) return min;
+    if (max != null && n > max) return max;
+    return n;
+  };
+  const startRef = React.useRef({ x: 0, val: 0 });
+  const onScrubStart = (e) => {
+    e.preventDefault();
+    startRef.current = { x: e.clientX, val: value };
+    const decimals = (String(step).split('.')[1] || '').length;
+    const move = (ev) => {
+      const dx = ev.clientX - startRef.current.x;
+      const raw = startRef.current.val + dx * step;
+      const snapped = Math.round(raw / step) * step;
+      onChange(clamp(Number(snapped.toFixed(decimals))));
+    };
+    const up = () => {
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+  };
+  return (
+    <div className="twk-num">
+      <span className="twk-num-lbl" onPointerDown={onScrubStart}>{label}</span>
+      <input type="number" value={value} min={min} max={max} step={step}
+             onChange={(e) => onChange(clamp(Number(e.target.value)))} />
+      {unit && <span className="twk-num-unit">{unit}</span>}
+    </div>
+  );
+}
+
+function TweakColor({ label, value, onChange }) {
+  return (
+    <div className="twk-row twk-row-h">
+      <div className="twk-lbl"><span>{label}</span></div>
+      <input type="color" className="twk-swatch" value={value}
+             onChange={(e) => onChange(e.target.value)} />
+    </div>
+  );
+}
+
+function TweakButton({ label, onClick, secondary = false }) {
+  return (
+    <button type="button" className={secondary ? 'twk-btn secondary' : 'twk-btn'}
+            onClick={onClick}>{label}</button>
+  );
+}
 </script>
 
 <script type="text/babel">
 
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
-  "accentHue": 232,
-  "accentHue2": 188,
-  "heroHeadline": "Engineering the Future,\nPowering Your Growth",
-  "tagline": "Your Trusted Technology Partner for Odoo ERP & Beyond",
-  "particleCount": 60,
+  "heroLine2": "Smarter Business Operations.",
   "showStats": true,
-  "cardStyle": "glass"
+  "showCalendly": true,
+  "partnerSectionTitle": "Are You an Odoo Consulting Firm?",
+  "accentColor": "teal"
 }/*EDITMODE-END*/;
 
-const { useState, useEffect, useRef, useCallback } = React;
+const { useState, useEffect } = React;
 
-// ── THREE.JS HERO SCENE ──────────────────────────────────────────────────────
-function HeroCanvas({ hue }) {
-  const canvasRef = useRef(null);
+/* ── THREE.JS HERO CANVAS ───────────────────────────────────────────────── */
+function HeroCanvas() {
+  const canvasRef = React.useRef(null);
   useEffect(() => {
     if (!window.THREE) return;
     const canvas = canvasRef.current;
@@ -864,75 +924,61 @@ function HeroCanvas({ hue }) {
     camera.position.z = 6;
 
     // Particles
-    const geometry = new THREE.BufferGeometry();
-    const count = 120;
-    const positions = new Float32Array(count * 3);
-    const scales = new Float32Array(count);
+    const geo = new THREE.BufferGeometry();
+    const count = 130;
+    const pos = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
-      positions[i * 3]     = (Math.random() - 0.5) * 14;
-      positions[i * 3 + 1] = (Math.random() - 0.5) * 8;
-      positions[i * 3 + 2] = (Math.random() - 0.5) * 6;
-      scales[i] = Math.random();
+      pos[i*3]   = (Math.random() - 0.5) * 14;
+      pos[i*3+1] = (Math.random() - 0.5) * 8;
+      pos[i*3+2] = (Math.random() - 0.5) * 6;
     }
-    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    const pMat = new THREE.PointsMaterial({ color: 0x4488ff, size: 0.04, transparent: true, opacity: 0.6 });
-    const particles = new THREE.Points(geometry, pMat);
+    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    const pMat = new THREE.PointsMaterial({ color: 0x02C39A, size: 0.045, transparent: true, opacity: 0.55 });
+    const particles = new THREE.Points(geo, pMat);
     scene.add(particles);
 
-    // Floating shapes
+    // Wireframe shapes
     const shapes = [];
-    const shapeGeos = [
-      new THREE.IcosahedronGeometry(0.4, 0),
-      new THREE.OctahedronGeometry(0.45, 0),
-      new THREE.TetrahedronGeometry(0.38, 0),
-      new THREE.IcosahedronGeometry(0.3, 1),
-      new THREE.OctahedronGeometry(0.35, 0),
-    ];
-    const mat = new THREE.MeshBasicMaterial({ color: 0x4488ff, wireframe: true, transparent: true, opacity: 0.22 });
-    shapeGeos.forEach((geo, i) => {
-      const mesh = new THREE.Mesh(geo, mat.clone());
-      mesh.position.set(
-        (Math.random() - 0.5) * 10,
-        (Math.random() - 0.5) * 5,
-        (Math.random() - 0.5) * 3 - 1
-      );
-      mesh.userData = { speed: 0.002 + Math.random() * 0.003, phase: Math.random() * Math.PI * 2 };
-      scene.add(mesh);
-      shapes.push(mesh);
+    const mats = [0x028090, 0x02C39A, 0x4a9eff];
+    [
+      new THREE.IcosahedronGeometry(0.42, 0),
+      new THREE.OctahedronGeometry(0.48, 0),
+      new THREE.TetrahedronGeometry(0.40, 0),
+      new THREE.IcosahedronGeometry(0.32, 1),
+      new THREE.OctahedronGeometry(0.36, 0),
+    ].forEach((g, i) => {
+      const mat = new THREE.MeshBasicMaterial({ color: mats[i % mats.length], wireframe: true, transparent: true, opacity: 0.18 });
+      const mesh = new THREE.Mesh(g, mat);
+      mesh.position.set((Math.random()-0.5)*10, (Math.random()-0.5)*5, (Math.random()-0.5)*3-1);
+      mesh.userData = { spd: 0.002 + Math.random()*0.003, phase: Math.random()*Math.PI*2 };
+      scene.add(mesh); shapes.push(mesh);
     });
 
-    // Connecting lines
-    const lineMat = new THREE.LineBasicMaterial({ color: 0x4488ff, transparent: true, opacity: 0.07 });
-    const lineGeo = new THREE.BufferGeometry();
-    const linePos = new Float32Array(60 * 3);
+    // Lines
+    const lGeo = new THREE.BufferGeometry();
+    const lPos = new Float32Array(60 * 3);
     for (let i = 0; i < 60; i++) {
-      linePos[i * 3]     = (Math.random() - 0.5) * 14;
-      linePos[i * 3 + 1] = (Math.random() - 0.5) * 8;
-      linePos[i * 3 + 2] = (Math.random() - 0.5) * 4;
+      lPos[i*3]   = (Math.random()-0.5)*14;
+      lPos[i*3+1] = (Math.random()-0.5)*8;
+      lPos[i*3+2] = (Math.random()-0.5)*4;
     }
-    lineGeo.setAttribute('position', new THREE.BufferAttribute(linePos, 3));
-    const lines = new THREE.Line(lineGeo, lineMat);
-    scene.add(lines);
+    lGeo.setAttribute('position', new THREE.BufferAttribute(lPos, 3));
+    scene.add(new THREE.Line(lGeo, new THREE.LineBasicMaterial({ color: 0x028090, transparent: true, opacity: 0.06 })));
 
     let mouse = { x: 0, y: 0 };
-    const onMouse = (e) => {
-      mouse.x = (e.clientX / window.innerWidth - 0.5) * 2;
-      mouse.y = -(e.clientY / window.innerHeight - 0.5) * 2;
-    };
+    const onMouse = e => { mouse.x = (e.clientX/window.innerWidth - 0.5)*2; mouse.y = -(e.clientY/window.innerHeight - 0.5)*2; };
     window.addEventListener('mousemove', onMouse);
 
-    let raf;
-    let t = 0;
+    let raf, t = 0;
     const animate = () => {
-      raf = requestAnimationFrame(animate);
-      t += 0.005;
-      particles.rotation.y = t * 0.05;
-      particles.rotation.x = mouse.y * 0.08;
-      camera.position.x += (mouse.x * 0.4 - camera.position.x) * 0.04;
-      camera.position.y += (mouse.y * 0.2 - camera.position.y) * 0.04;
-      shapes.forEach((s) => {
-        s.rotation.x += s.userData.speed;
-        s.rotation.y += s.userData.speed * 0.7;
+      raf = requestAnimationFrame(animate); t += 0.005;
+      particles.rotation.y = t * 0.04;
+      particles.rotation.x = mouse.y * 0.07;
+      camera.position.x += (mouse.x * 0.35 - camera.position.x) * 0.04;
+      camera.position.y += (mouse.y * 0.18 - camera.position.y) * 0.04;
+      shapes.forEach(s => {
+        s.rotation.x += s.userData.spd;
+        s.rotation.y += s.userData.spd * 0.7;
         s.position.y += Math.sin(t + s.userData.phase) * 0.002;
       });
       renderer.render(scene, camera);
@@ -945,98 +991,78 @@ function HeroCanvas({ hue }) {
       camera.updateProjectionMatrix();
     };
     window.addEventListener('resize', onResize);
-
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener('mousemove', onMouse);
-      window.removeEventListener('resize', onResize);
-      renderer.dispose();
-    };
+    return () => { cancelAnimationFrame(raf); window.removeEventListener('mousemove', onMouse); window.removeEventListener('resize', onResize); renderer.dispose(); };
   }, []);
-
-  return React.createElement('canvas', { ref: canvasRef, id: 'hero-canvas' });
+  return <canvas ref={canvasRef} id="hero-canvas" />;
 }
 
-// ── NAV ──────────────────────────────────────────────────────────────────────
-function Nav({ tweaks, setTweak }) {
+/* ── NAV ─────────────────────────────────────────────────────────────────── */
+function Nav() {
   const [scrolled, setScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [mob, setMob] = useState(false);
   useEffect(() => {
-    const fn = () => setScrolled(window.scrollY > 40);
+    const fn = () => setScrolled(window.scrollY > 36);
     window.addEventListener('scroll', fn);
     return () => window.removeEventListener('scroll', fn);
   }, []);
-  const links = ['About', 'Services', 'Portfolio', 'Contact'];
+  const go = id => { document.getElementById(id)?.scrollIntoView({behavior:'smooth'}); setMob(false); };
+  const links = [['about','About'],['services','Services'],['partners','Partners'],['cases','Case Studies'],['team','Team'],['contact','Contact']];
   return (
     <nav className={scrolled ? 'scrolled' : ''}>
-      <a className="nav-logo" href="#">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 56" fill="none" height="38">
-          <defs>
-            <linearGradient id="ng1" x1="0" y1="0" x2="56" y2="56" gradientUnits="userSpaceOnUse"><stop offset="0%" stopColor="#4a9eff"/><stop offset="100%" stopColor="#2de8c8"/></linearGradient>
-            <linearGradient id="ng2" x1="0" y1="0" x2="56" y2="56" gradientUnits="userSpaceOnUse"><stop offset="0%" stopColor="#4a9eff" stopOpacity="0.18"/><stop offset="100%" stopColor="#2de8c8" stopOpacity="0.08"/></linearGradient>
-            <filter id="nglow"><feGaussianBlur stdDeviation="1.5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-          </defs>
-          <rect x="1" y="1" width="54" height="54" rx="13" fill="url(#ng2)" stroke="url(#ng1)" strokeWidth="1.2" opacity="0.5"/>
-          <g filter="url(#nglow)">
-            <line x1="16" y1="14" x2="40" y2="14" stroke="url(#ng1)" strokeWidth="3.5" strokeLinecap="round"/>
-            <line x1="16" y1="28" x2="34" y2="28" stroke="url(#ng1)" strokeWidth="3.5" strokeLinecap="round"/>
-            <line x1="16" y1="42" x2="40" y2="42" stroke="url(#ng1)" strokeWidth="3.5" strokeLinecap="round"/>
-            <line x1="16" y1="14" x2="16" y2="42" stroke="url(#ng1)" strokeWidth="3.5" strokeLinecap="round"/>
-            <circle cx="40" cy="14" r="4" fill="#4a9eff" opacity="0.9"/><circle cx="40" cy="14" r="2" fill="#fff" opacity="0.9"/>
-            <circle cx="34" cy="28" r="4" fill="#38d4b0" opacity="0.9"/><circle cx="34" cy="28" r="2" fill="#fff" opacity="0.9"/>
-            <circle cx="40" cy="42" r="4" fill="#4a9eff" opacity="0.9"/><circle cx="40" cy="42" r="2" fill="#fff" opacity="0.9"/>
-          </g>
-          <line x1="62" y1="14" x2="62" y2="42" stroke="#4a9eff" strokeWidth="0.8" strokeOpacity="0.25"/>
-          <text x="68" y="23" fontFamily="'Outfit','Helvetica Neue',sans-serif" fontWeight="700" fontSize="19" letterSpacing="-0.5" fill="#e6eeff">Ellium</text>
-          <text x="68" y="42" fontFamily="'Outfit','Helvetica Neue',sans-serif" fontWeight="300" fontSize="13" letterSpacing="3.5" fill="#7a8daa">LABS</text>
-        </svg>
-      </a>
+      <a href="#" className="nav-logo"><img src="logo3.jpeg" alt="Ellium Labs" /></a>
       <ul className="nav-links">
-        {links.map(l => (
-          <li key={l}><a href={`#${l.toLowerCase()}`}>{l}</a></li>
+        {links.map(([id,lbl]) => (
+          <li key={id}><a href={`#${id}`} onClick={e=>{e.preventDefault();go(id);}}>{lbl}</a></li>
         ))}
       </ul>
-      <button className="nav-cta" onClick={() => document.getElementById('contact').scrollIntoView({behavior:'smooth'})}>
-        Get Consultation
-      </button>
-      <button className="mobile-menu-btn" onClick={() => setMenuOpen(!menuOpen)}>☰</button>
+      <button className="nav-cta" onClick={() => go('contact')}>Get In Touch</button>
+      <button className="mob-btn" onClick={() => setMob(o=>!o)}>☰</button>
+      {mob && (
+        <div style={{position:'fixed',inset:0,top:'68px',background:'rgba(11,31,58,.97)',zIndex:999,display:'flex',flexDirection:'column',padding:'32px 5%',gap:'22px',backdropFilter:'blur(16px)'}}>
+          {links.map(([id,lbl]) => (
+            <a key={id} href="#" onClick={e=>{e.preventDefault();go(id);}}
+              style={{color:'var(--text)',fontSize:'22px',fontFamily:'Outfit',fontWeight:'600',textDecoration:'none'}}>{lbl}</a>
+          ))}
+          <button className="btn-primary" style={{alignSelf:'flex-start',marginTop:'8px'}} onClick={()=>go('contact')}>Get In Touch</button>
+        </div>
+      )}
     </nav>
   );
 }
 
-// ── HERO ─────────────────────────────────────────────────────────────────────
+/* ── HERO ────────────────────────────────────────────────────────────────── */
 function Hero({ tweaks }) {
-  const lines = (tweaks.heroHeadline || '').split('\n');
+  const stats = [['13+','Team Members'],['4','Odoo Certified'],['10+','Yrs Odoo Exp.'],['v16–v18','Odoo Versions']];
   return (
     <section id="hero">
-      <HeroCanvas hue={tweaks.accentHue} />
-      <div className="hero-grid-overlay"></div>
+      <HeroCanvas />
+      <div className="hero-grid"></div>
       <div className="hero-glow hero-glow-1"></div>
       <div className="hero-glow hero-glow-2"></div>
-      <div className="hero-content">
-        <div className="hero-badge">
-          <span className="section-tag">Odoo ERP Specialists</span>
+      <div className="hero-inner">
+        <div style={{animation:'fadeIn .6s ease both'}}>
+          <span className="chip">Odoo ERP Specialists · Bangladesh</span>
         </div>
-        <h1 className="hero-headline">
-          {lines[0]}{lines[1] && <><br/><span className="gradient-text">{lines[1]}</span></>}
+        <h1 className="hero-h1">
+          We Implement Odoo.<br />
+          We Build Software.<br />
+          <span className="g-text">{tweaks.heroLine2}</span>
         </h1>
-        <p className="hero-sub">{tweaks.tagline}</p>
+        <p className="hero-sub">
+          Ellium Labs is a software company with Odoo-certified professionals, helping businesses streamline operations, automate processes, and scale confidently with ERP and custom technology.
+        </p>
         <div className="hero-actions">
-          <button className="btn-primary" onClick={() => document.getElementById('contact').scrollIntoView({behavior:'smooth'})}>
-            <span>Get Consultation</span>
-            <span>→</span>
+          <button className="btn-primary" onClick={() => document.getElementById('contact')?.scrollIntoView({behavior:'smooth'})}>
+            Start a Project <span>→</span>
           </button>
-          <button className="btn-secondary" onClick={() => document.getElementById('services').scrollIntoView({behavior:'smooth'})}>
+          <button className="btn-outline" onClick={() => document.getElementById('services')?.scrollIntoView({behavior:'smooth'})}>
             Explore Services
           </button>
         </div>
         {tweaks.showStats && (
-          <div className="hero-stats pop-children">
-            {[['150+','Projects Delivered'],['98%','Client Satisfaction'],['10+','Industries Served'],['6+','Years Experience']].map(([n,l]) => (
-              <div className="stat" key={l}>
-                <div className="stat-num">{n}</div>
-                <div className="stat-label">{l}</div>
-              </div>
+          <div className="hero-stats pop">
+            {stats.map(([n,l]) => (
+              <div className="hst" key={l}><div className="hst-n">{n}</div><div className="hst-l">{l}</div></div>
             ))}
           </div>
         )}
@@ -1045,33 +1071,66 @@ function Hero({ tweaks }) {
   );
 }
 
-// ── ABOUT ─────────────────────────────────────────────────────────────────────
+/* ── TICKER ──────────────────────────────────────────────────────────────── */
+function Ticker() {
+  const items = [
+    'Odoo v16 Implementation','Odoo v17 Implementation','Odoo v18 Implementation',
+    'Custom Module Development','Migration & Upgrades','Web Development',
+    'BA · QA · PM Support','Post-Live Maintenance','4 Certified Odoo Experts',
+    'Dhaka, Bangladesh','Serving US · UK · AU · CA · SG','Zero Client Escalations'
+  ];
+  const dbl = [...items, ...items];
+  return (
+    <div className="ticker-wrap">
+      <div className="ticker-track">
+        {dbl.map((t,i) => <div className="ticker-item" key={i}><span className="ticker-dot"></span><span>{t}</span></div>)}
+      </div>
+    </div>
+  );
+}
+
+/* ── ABOUT ───────────────────────────────────────────────────────────────── */
 function About() {
   return (
     <section id="about">
-      <div className="section-inner">
+      <div className="wrap">
         <div className="about-grid">
-          <div className="about-visual slide-left">
-            <div style={{position:'absolute',inset:0,background:'radial-gradient(circle at 30% 40%, oklch(62% 0.20 232 / 0.08), transparent 60%)'}}></div>
-            <div style={{position:'absolute',inset:0,background:'radial-gradient(circle at 70% 70%, oklch(62% 0.18 188 / 0.06), transparent 50%)'}}></div>
-            <div className="about-3d-shape"></div>
-            <div style={{position:'absolute',bottom:'24px',left:'24px',right:'24px',background:'var(--bg-card2)',border:'1px solid var(--border)',borderRadius:'12px',padding:'16px 20px'}}>
-              <div style={{fontSize:'11px',color:'var(--text-muted)',fontWeight:'600',letterSpacing:'0.1em',textTransform:'uppercase',marginBottom:'8px'}}>Odoo Certified Partner</div>
-              <div style={{height:'4px',background:'var(--border)',borderRadius:'2px',overflow:'hidden'}}>
-                <div style={{height:'100%',width:'88%',background:'linear-gradient(90deg,var(--accent),var(--accent2))',borderRadius:'2px'}}></div>
-              </div>
-              <div style={{marginTop:'6px',fontSize:'12px',color:'var(--text-muted)',display:'flex',justifyContent:'space-between'}}>
-                <span>Expertise</span><span style={{color:'var(--accent)',fontWeight:'600'}}>88%</span>
+          <div className="about-vis reveal">
+            <div className="a-stat-grid">
+              {[['13+','Team Members'],['4','Certified Experts'],['19+','Yrs Experience'],['3+','Active Partners']].map(([n,l]) => (
+                <div className="a-stat" key={l}><div className="a-stat-n">{n}</div><div className="a-stat-l">{l}</div></div>
+              ))}
+            </div>
+            <div className="cert-row">
+              <div className="cert-lbl">Odoo Certifications</div>
+              <div className="cert-pills">
+                {['Odoo v17 ×1','Odoo v18 ×3','Functional Certified','Technical'].map(c => (
+                  <span className="cert-pill" key={c}>{c}</span>
+                ))}
               </div>
             </div>
+            <div style={{padding:'14px 16px',borderRadius:'10px',background:'rgba(255,255,255,.03)',border:'1px solid var(--border)'}}>
+              <div style={{fontSize:'11px',color:'var(--text-muted)',fontWeight:'600',letterSpacing:'.06em',textTransform:'uppercase',marginBottom:'10px'}}>Team Composition</div>
+              {[['Odoo Developers',10],['BA / QA / PM',3]].map(([role,count]) => (
+                <div key={role} style={{marginBottom:'8px'}}>
+                  <div style={{display:'flex',justifyContent:'space-between',fontSize:'12.5px',color:'var(--text-muted)',marginBottom:'5px'}}>
+                    <span>{role}</span><span style={{color:'var(--teal-light)',fontWeight:'600'}}>{count}</span>
+                  </div>
+                  <div style={{height:'4px',background:'var(--border)',borderRadius:'2px',overflow:'hidden'}}>
+                    <div style={{height:'100%',width:`${(count/13)*100}%`,background:'linear-gradient(90deg,var(--teal),var(--teal-light))',borderRadius:'2px'}}></div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="about-text slide-right">
-            <span className="section-tag">About Us</span>
-            <h2>We Build Technology That Moves Businesses Forward</h2>
-            <p>Ellium Labs is a technology company at the intersection of intelligent ERP solutions and modern software engineering. We specialize in Odoo implementation, customization, and integration — helping businesses streamline operations, reduce friction, and scale confidently.</p>
-            <p style={{marginTop:'14px'}}>Our team brings deep technical expertise, a client-first philosophy, and a commitment to delivering solutions that don't just work today — but grow with you for years to come.</p>
-            <div className="about-pills pop-children">
-              {['Odoo ERP','Business Automation','Custom Development','IT Consulting','Cloud Solutions','System Integration'].map(p => (
+
+          <div className="about-txt reveal" style={{transitionDelay:'.12s'}}>
+            <span className="chip">About Us</span>
+            <h2>A Certified Odoo Team That <span className="g-text">Delivers</span></h2>
+            <p>Ellium Labs is a software company based in Dhaka, Bangladesh. We specialize in Odoo ERP implementation and customization, custom software development, and web solutions — helping businesses in the US, UK, Australia, Canada, and Singapore run smarter operations.</p>
+            <p>Founded by 3 experienced co-founders with 19+ combined years in Odoo, we bring a senior-led, certification-backed approach to every engagement.</p>
+            <div className="about-pills">
+              {['Odoo ERP','Custom Development','Web Solutions','Business Automation','BA & QA Support','System Integration'].map(p => (
                 <span className="pill" key={p}>{p}</span>
               ))}
             </div>
@@ -1082,30 +1141,30 @@ function About() {
   );
 }
 
-// ── SERVICES ──────────────────────────────────────────────────────────────────
+/* ── SERVICES ────────────────────────────────────────────────────────────── */
 const SERVICES = [
-  { icon: '⬡', title: 'Odoo ERP Implementation', desc: 'End-to-end Odoo deployment tailored to your business workflows — from requirements analysis to go-live and beyond.', num: '01' },
-  { icon: '◈', title: 'Odoo Customization & Integration', desc: 'Custom modules, API integrations, and third-party connectors that extend Odoo to fit your exact needs.', num: '02' },
-  { icon: '⟳', title: 'Business Process Automation', desc: 'Identify bottlenecks and automate repetitive tasks — freeing your team to focus on what creates real value.', num: '03' },
-  { icon: '⌥', title: 'Web & Software Development', desc: 'Scalable web apps, portals, and bespoke software built with modern stacks and engineering best practices.', num: '04' },
-  { icon: '◎', title: 'IT Consulting & Support', desc: 'Strategic technology advice and reliable ongoing support to keep your systems performing at peak capacity.', num: '05' },
-  { icon: '⬙', title: 'Cloud & Infrastructure', desc: 'Cloud migration, DevOps setup, and infrastructure management so your systems are secure, fast, and always on.', num: '06' },
+  { ico:'⬡', n:'01', title:'Odoo Implementation', desc:'End-to-end Odoo deployment (v16, v17, v18) — from requirements analysis and configuration to go-live and user training.' },
+  { ico:'◈', n:'02', title:'Custom Module Development', desc:'Purpose-built Odoo modules for your exact business requirements — custom workflows, integrations, and automation.' },
+  { ico:'⟳', n:'03', title:'Migration & Upgrades', desc:'Safe, structured migration from Odoo v15 all the way to v19 — including data migration, module porting, and thorough testing.' },
+  { ico:'◻', n:'04', title:'Web Development', desc:'Custom websites, web apps, B2B portals, and e-commerce platforms built with modern technologies and best practices.' },
+  { ico:'◎', n:'05', title:'BA, QA & PM Support', desc:'Dedicated Business Analysts, QA testers, and Project Managers who ensure your project stays on scope and on time.' },
+  { ico:'⬙', n:'06', title:'Post-Live Support & More', desc:'Ongoing maintenance, enhancements, and support contracts — plus additional custom services tailored to your unique business needs.' },
 ];
 
 function Services() {
   return (
     <section id="services">
-      <div className="section-inner">
-        <div className="section-header reveal">
-          <span className="section-tag">What We Do</span>
-          <h2>Services Built Around <span style={{background:'linear-gradient(135deg,var(--accent),var(--accent2))',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',backgroundClip:'text'}}>Your Goals</span></h2>
-          <p>A comprehensive suite of technology services designed to modernize, automate, and accelerate your business.</p>
+      <div className="wrap">
+        <div className="sec-hd reveal">
+          <span className="chip">What We Do</span>
+          <h2>Services Built Around <span className="g-text">Your Business</span></h2>
+          <p>From initial Odoo setup to custom development and ongoing support — we cover the full technology lifecycle.</p>
         </div>
-        <div className="services-grid pop-children">
-          {SERVICES.map((s) => (
-            <div className="service-card" key={s.num}>
-              <span className="card-num">{s.num}</span>
-              <div className="service-icon-wrap">{s.icon}</div>
+        <div className="svc-grid pop">
+          {SERVICES.map(s => (
+            <div className="svc-card" key={s.n}>
+              <span className="svc-n">{s.n}</span>
+              <div className="svc-ico">{s.ico}</div>
               <h3>{s.title}</h3>
               <p>{s.desc}</p>
             </div>
@@ -1116,27 +1175,30 @@ function Services() {
   );
 }
 
-// ── WHY ───────────────────────────────────────────────────────────────────────
+/* ── WHY ─────────────────────────────────────────────────────────────────── */
+// Partner section moved up — right after Why, for maximum visibility
 const WHY = [
-  { icon: '◇', title: 'Deep Odoo Expertise', desc: 'Years of Odoo implementation experience across manufacturing, retail, services, and more.' },
-  { icon: '◈', title: 'Client-Focused Approach', desc: 'We listen first. Every engagement starts with understanding your unique business challenges.' },
-  { icon: '⬡', title: 'Scalable Solutions', desc: 'Architecture that grows with you — no need to re-platform as your business evolves.' },
-  { icon: '◉', title: 'Reliable Long-Term Support', desc: 'Post-launch partnerships with SLAs, proactive monitoring, and a team that knows your system.' },
+  { ico:'🏅', title:'4 Odoo Certified Experts', desc:'3 × Odoo v18 + 1 × Odoo v17 certified professionals — both functional and technical depth on every project.' },
+  { ico:'👥', title:'Senior-Led Delivery', desc:'3 co-founders personally involved in every engagement. No juniors handed critical work unsupervised.' },
+  { ico:'🌐', title:'English-First Communication', desc:'All documentation, communication, and deliverables in professional English — no language barrier, ever.' },
+  { ico:'⚡', title:'Competitive Pricing', desc:'Bangladesh-based costs without a quality compromise. Your budget goes further with us.' },
+  { ico:'🧩', title:'Full-Stack Team', desc:'Developers, BA, QA, and PM under one roof. One partner handles your complete project lifecycle.' },
+  { ico:'✅', title:'Proven Track Record', desc:'Delivered projects for clients in Thailand, India, and Bangladesh with zero escalations.' },
 ];
 
 function Why() {
   return (
     <section id="why">
-      <div className="section-inner">
-        <div className="section-header reveal">
-          <span className="section-tag">Why Ellium Labs</span>
-          <h2>The Partner Built for the Long Run</h2>
-          <p>We don't just implement software. We become invested in your success.</p>
+      <div className="wrap">
+        <div className="sec-hd reveal">
+          <span className="chip">Why Choose Us</span>
+          <h2>Why Businesses Choose <span className="g-text">Ellium Labs</span></h2>
+          <p>We're not just a vendor. We're a technology partner invested in your long-term success.</p>
         </div>
-        <div className="why-grid pop-children">
+        <div className="why-grid pop">
           {WHY.map(w => (
             <div className="why-card" key={w.title}>
-              <div className="why-icon">{w.icon}</div>
+              <div className="why-ico">{w.ico}</div>
               <h3>{w.title}</h3>
               <p>{w.desc}</p>
             </div>
@@ -1147,38 +1209,98 @@ function Why() {
   );
 }
 
-// ── PORTFOLIO ────────────────────────────────────────────────────────────────
-const PROJECTS = [
-  { tag: 'Odoo ERP', title: 'Manufacturing ERP Rollout', desc: 'Full Odoo 16 implementation for a mid-size manufacturer — MRP, inventory, and finance unified in one platform.' },
-  { tag: 'Automation', title: 'Retail Chain Automation', desc: 'Automated procurement, stock management, and POS integration across 12 retail locations.' },
-  { tag: 'Custom Dev', title: 'Client Portal & CRM', desc: 'Bespoke customer portal with integrated CRM, ticketing system, and real-time analytics dashboard.' },
-  { tag: 'Integration', title: 'Multi-system Integration', desc: 'Seamless API integration connecting Odoo with Shopify, Stripe, and a custom logistics platform.' },
-  { tag: 'Consulting', title: 'Digital Transformation', desc: 'Full-stack technology advisory for a services firm migrating from legacy systems to a modern cloud stack.' },
-  { tag: 'Web Dev', title: 'SaaS Platform Build', desc: 'End-to-end development of a B2B SaaS application with multi-tenancy, billing, and an admin dashboard.' },
+/* ── LOGO IMAGE with styled fallback ────────────────────────────────────── */
+function LogoImg({ src, alt, fallback }) {
+  const [failed, setFailed] = React.useState(!src); // start failed if no src
+
+  const FallbackEl = () => {
+    const lines = (fallback || alt || '').split('\n');
+    return (
+      <div style={{display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'16px 24px', textAlign:'center', gap:'4px'}}>
+        <span style={{fontFamily:'Outfit', fontWeight:'700', fontSize:'16px', color:'var(--teal)', letterSpacing:'-0.01em'}}>{lines[0]}</span>
+        {lines[1] && <span style={{fontFamily:'Outfit', fontWeight:'400', fontSize:'12px', color:'var(--text-muted)', letterSpacing:'0.04em'}}>{lines[1]}</span>}
+      </div>
+    );
+  };
+
+  if (failed || !src) return <FallbackEl />;
+  return (
+    <img
+      src={src} alt={alt}
+      style={{maxWidth:'75%', maxHeight:'90px', objectFit:'contain', padding:'8px'}}
+      onError={() => setFailed(true)}
+    />
+  );
+}
+
+/* ── CASE STUDIES ────────────────────────────────────────────────────────── */
+const CASES = [
+  {
+    tag:'Odoo Implementation',
+    title:'Laundry Management System',
+    loc:'🇹🇭 Thailand',
+    desc:'Full Odoo implementation for a laundry business — custom laundry workflows, delivery scheduling, inventory, invoicing, and reporting. Delivered remotely for a foreign client.',
+    mods:['Inventory','Orders','Invoicing','Custom Workflow','Delivery Scheduling','Reporting'],
+    result:'On-time delivery, foreign client, zero escalations',
+    logo:'washtech-logo.png',
+    logoBg:'#ffffff',
+    fallback:'WashTech Thailand\nLaundry Management',
+    link:'http://www.washtechthailand.com',
+  },
+  {
+    tag:'Web Development',
+    title:'Third Eye Sourcing Website',
+    loc:'🇧🇩 Bangladesh (B2B)',
+    desc:'Full website design and development for a B2B sourcing company. Factory network showcase, product category system, contact and inquiry management, fully mobile-responsive.',
+    mods:['Factory Network','Product Categories','Inquiry System','Mobile Responsive'],
+    result:'Live at thirdeyesourcing.com',
+    logo:'https://thirdeyesourcing.com/images/image.png',
+    logoBg:'#eaf4ff',
+    fallback:'Third Eye Sourcing\nB2B Sourcing Website',
+    link:'https://thirdeyesourcing.com',
+  },
+  {
+    tag:'Odoo · White-Label',
+    title:'Partner Projects via Primacy Infotech',
+    loc:'🇮🇳 Kolkata, India',
+    desc:'Multiple Odoo implementation projects delivered as the white-label technical partner for Primacy Infotech, a consulting firm based in Kolkata. Ongoing engagement.',
+    mods:['Odoo ERP','White-Label Delivery','Multi-Project','Partner Collaboration'],
+    result:'Ongoing partnership — multiple projects delivered',
+    logo:'https://primacyinfotechltd.com/storage/settings/pJPxXehJYdPGwHY5LpTSgv1yZd0ofen0m1G7cbLQ.png',
+    logoBg:'#ffffff',
+    fallback:'Primacy Infotech Ltd.\nOdoo White-Label Partner',
+    link:'https://primacyinfotechltd.com',
+  },
 ];
 
-function Portfolio() {
+function Cases() {
   return (
-    <section id="portfolio">
-      <div className="section-inner">
-        <div className="section-header reveal">
-          <span className="section-tag">Case Studies</span>
-          <h2>Work That Speaks for Itself</h2>
-          <p>Real projects, real outcomes. Here are some highlights from our client engagements.</p>
+    <section id="cases">
+      <div className="wrap">
+        <div className="sec-hd reveal">
+          <span className="chip">Case Studies</span>
+          <h2>Work That <span className="g-text">Speaks for Itself</span></h2>
+          <p>Real projects, real clients, real outcomes.</p>
         </div>
-        <div className="portfolio-grid pop-children">
-          {PROJECTS.map(p => (
-            <div className="portfolio-card" key={p.title}>
-              <div className="portfolio-img">
-                <div className="portfolio-placeholder">
-                  <span>project visual</span>
+        <div className="cases-grid pop">
+          {CASES.map(c => (
+            <div className="case-card" key={c.title}>
+              <div className="case-thumb">
+                <div className="case-thumb-bg" style={{background: c.logoBg || 'var(--navy-card)', display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column', gap:'8px'}}>
+                  <LogoImg src={c.logo} alt={c.title} fallback={c.fallback} />
                 </div>
-                <div className="portfolio-img-overlay">View Case Study →</div>
+                <span className="case-tag">{c.tag}</span>
               </div>
-              <div className="portfolio-body">
-                <div className="portfolio-tag">{p.tag}</div>
-                <h3>{p.title}</h3>
-                <p>{p.desc}</p>
+              <div className="case-body">
+                <div className="case-title">{c.title}</div>
+                <div className="case-loc">{c.loc}</div>
+                <p className="case-desc">{c.desc}</p>
+                <div className="case-mods">{c.mods.map(m => <span className="case-mod" key={m}>{m}</span>)}</div>
+                <div className="case-result">{c.result}</div>
+                <a href={c.link} target="_blank" rel="noopener noreferrer"
+                  style={{marginTop:'10px',display:'inline-flex',alignItems:'center',gap:'6px',fontSize:'12px',color:'var(--teal-light)',textDecoration:'none',fontFamily:'Outfit',fontWeight:'600'}}>
+                  Visit site ↗
+                </a>
               </div>
             </div>
           ))}
@@ -1188,29 +1310,29 @@ function Portfolio() {
   );
 }
 
-// ── TAGLINES ─────────────────────────────────────────────────────────────────
-const TAGLINES = [
-  'Your Trusted Technology Partner for Odoo ERP & Beyond',
-  'Where Business Strategy Meets Engineering Excellence',
-  'Smarter Systems. Stronger Businesses.',
-  'Built to Scale. Designed to Last.',
-  'Technology Partnerships That Deliver Results',
+/* ── TEAM ────────────────────────────────────────────────────────────────── */
+const TEAM = [
+  { av:'LE', role:'Lead Solution Architect', bio:'7+ years of software engineering and Odoo solution architecture. Leads all technical decisions, custom module development, and system design across client projects.', creds:['7+ Yrs Experience','Odoo v18 Certified','Solution Architecture'] },
+  { av:'PL', role:'PM & Technology Development', bio:'8+ years in project management and technology development. Manages client relationships, delivery timelines, and ensures projects are scoped and executed precisely.', creds:['8+ Yrs Experience','Project Management','Technology Development','Odoo v17 Certified','Odoo v18 Certified'] },
+  { av:'SD', role:'Senior Odoo Developer', bio:'4+ years of Odoo implementation with v17 and v18 functional certifications. Specializes in functional configuration, custom workflows, and full-cycle Odoo delivery.', creds:['4+ Yrs Experience','Odoo v17 Certified'] },
 ];
 
-function Taglines() {
+function Team() {
   return (
-    <section id="taglines" style={{paddingTop:'80px',paddingBottom:'80px'}}>
-      <div className="section-inner">
-        <div className="section-header reveal">
-          <span className="section-tag">Brand Voice</span>
-          <h2>Our Tagline Options</h2>
-          <p>Five variations — each capturing a different facet of what Ellium Labs delivers.</p>
+    <section id="team">
+      <div className="wrap">
+        <div className="sec-hd reveal">
+          <span className="chip">The Team</span>
+          <h2>3 Co-Founders, <span className="g-text">19+ Years Combined Experience</span></h2>
+          <p>That's 19+ years of Odoo & software experience across our founding team — senior-led delivery on every project.</p>
         </div>
-        <div className="tagline-list pop-children">
-          {TAGLINES.map((t, i) => (
-            <div className="tagline-item" key={i} style={i === 0 ? {borderColor:'oklch(62% 0.20 232 / 0.45)',background:'oklch(62% 0.20 232 / 0.05)'} : {}}>
-              <span className="tagline-num">{String(i+1).padStart(2,'0')}</span>
-              <p>{t}{i === 0 && <span style={{marginLeft:'8px',fontSize:'11px',color:'var(--accent)',fontWeight:'600'}}>★ Primary</span>}</p>
+        <div className="team-grid pop">
+          {TEAM.map(m => (
+            <div className="team-card" key={m.av}>
+              <div className="team-av">{m.av}</div>
+              <div className="team-role">{m.role}</div>
+              <p className="team-bio">{m.bio}</p>
+              <div className="team-creds">{m.creds.map(c => <span className="team-cred" key={c}>{c}</span>)}</div>
             </div>
           ))}
         </div>
@@ -1219,9 +1341,114 @@ function Taglines() {
   );
 }
 
-// ── CONTACT ───────────────────────────────────────────────────────────────────
-function Contact() {
-  const [form, setForm] = useState({ name: '', email: '', company: '', service: '', message: '' });
+/* ── PARTNER SECTION ─────────────────────────────────────────────────────── */
+const PARTNER_FEATS = [
+  { ico:'🤫', title:'Fully Invisible Delivery', desc:'We never contact your clients directly. Everything ships under your brand, your name, your domain.' },
+  { ico:'⚙️', title:'Technical Muscle on Demand', desc:'Tap into 10 Odoo developers + BA/QA/PM when you win projects that need more capacity than you have.' },
+  { ico:'💰', title:'Improve Your Margins', desc:'Our Bangladesh-based rates give your proposals a competitive pricing edge without cutting corners.' },
+  { ico:'📋', title:'Proven Process', desc:'Multiple white-label projects delivered with zero escalations. We integrate into your workflow seamlessly.' },
+];
+
+function Partners({ tweaks }) {
+  return (
+    <section id="partners">
+      <div className="wrap">
+        <div className="partner-grid">
+          <div className="reveal">
+            <span className="chip">For Odoo Consulting Firms</span>
+            <h2>{tweaks.partnerSectionTitle}</h2>
+            <p>
+              If you're a small Odoo consulting firm in the US, UK, Australia, Canada, or Singapore — we can be your invisible technical backbone. You win the client. We deliver the project. Your clients see only your brand.
+            </p>
+            <div className="partner-quote">
+              <p>"We work invisibly under your brand. Your clients see your company. You see reliable delivery."</p>
+            </div>
+            <div className="partner-actions">
+              <button className="btn-primary" onClick={() => document.getElementById('contact')?.scrollIntoView({behavior:'smooth'})}>
+                Discuss Partnership →
+              </button>
+              <button className="btn-outline" onClick={() => document.getElementById('cases')?.scrollIntoView({behavior:'smooth'})}>
+                See Case Studies
+              </button>
+            </div>
+          </div>
+          <div className="partner-right reveal" style={{transitionDelay:'.12s'}}>
+            {PARTNER_FEATS.map(f => (
+              <div className="p-feat" key={f.title}>
+                <div className="p-feat-ico">{f.ico}</div>
+                <div className="p-feat-txt"><h4>{f.title}</h4><p>{f.desc}</p></div>
+              </div>
+            ))}
+            <div className="partner-logos">
+              <span className="partner-logos-lbl">Serving partners in</span>
+              {['🇺🇸 USA','🇬🇧 UK','🇦🇺 Australia','🇨🇦 Canada','🇸🇬 Singapore'].map(f => (
+                <span className="partner-flag" key={f}>{f}</span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ── CALENDLY BANNER ─────────────────────────────────────────────────────── */
+function CalendlyBanner() {
+  return (
+    <div style={{
+      background:'linear-gradient(130deg, rgba(2,128,144,0.18) 0%, rgba(2,195,154,0.10) 100%)',
+      borderTop:'1px solid rgba(2,195,154,0.22)', borderBottom:'1px solid rgba(2,195,154,0.22)',
+      padding:'48px 5%',
+    }}>
+      <div className="wrap" style={{display:'flex', alignItems:'center', justifyContent:'space-between', gap:'32px', flexWrap:'wrap'}}>
+        <div style={{display:'flex', alignItems:'center', gap:'20px'}}>
+          <div style={{
+            width:'56px', height:'56px', borderRadius:'14px', flexShrink:0,
+            background:'linear-gradient(135deg, var(--teal), var(--teal-light))',
+            display:'flex', alignItems:'center', justifyContent:'center', fontSize:'26px',
+            boxShadow:'0 4px 20px rgba(2,128,144,0.35)',
+          }}>📅</div>
+          <div>
+            <div style={{fontFamily:'Outfit', fontWeight:'700', fontSize:'clamp(18px,2.2vw,24px)', color:'var(--text)', marginBottom:'4px'}}>
+              Book a Free Discovery Call
+            </div>
+            <div style={{color:'var(--text-muted)', fontSize:'14px', lineHeight:'1.6'}}>
+              30 minutes · No commitment · Get a clear plan for your project
+            </div>
+          </div>
+        </div>
+        <a href="#" className="btn-primary" style={{whiteSpace:'nowrap', fontSize:'15px', padding:'14px 32px', borderRadius:'10px', textDecoration:'none', boxShadow:'0 4px 28px rgba(2,128,144,0.4)'}}>
+          Schedule a Call →
+        </a>
+      </div>
+    </div>
+  );
+}
+
+/* ── CTA BAND ────────────────────────────────────────────────────────────── */
+function CtaBand() {
+  return (
+    <div className="cta-band reveal">
+      <div className="wrap">
+        <span className="chip" style={{marginBottom:'18px',display:'inline-flex'}}>Ready to Start?</span>
+        <h2>Let's Build Something Great Together</h2>
+        <p>Whether you need Odoo implemented, custom software built, or a technology partner for your consulting firm — we're ready.</p>
+        <div className="cta-band-btns">
+          <button className="btn-primary" onClick={() => document.getElementById('contact')?.scrollIntoView({behavior:'smooth'})}>
+            Get In Touch →
+          </button>
+          <button className="btn-outline" onClick={() => document.getElementById('cases')?.scrollIntoView({behavior:'smooth'})}>
+            View Case Studies
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── CONTACT ─────────────────────────────────────────────────────────────── */
+function Contact({ tweaks }) {
+  const [form, setForm] = useState({name:'',email:'',company:'',type:'',service:'',message:''});
   const [sent, setSent] = useState(false);
   const [sending, setSending] = useState(false);
   const [errors, setErrors] = useState({});
@@ -1233,111 +1460,118 @@ function Contact() {
     if (!form.message.trim()) e.message = true;
     return e;
   };
-
-  const handleSubmit = async (ev) => {
+  const submit = async ev => {
     ev.preventDefault();
     const e = validate();
     if (Object.keys(e).length) { setErrors(e); return; }
-    setErrors({});
-    setSending(true);
-    await new Promise(r => setTimeout(r, 1400));
-    setSending(false);
-    setSent(true);
+    setErrors({}); setSending(true);
+    await new Promise(r => setTimeout(r, 1200));
+    setSending(false); setSent(true);
   };
-
-  const set = (k) => (ev) => { setForm(f => ({...f, [k]: ev.target.value})); setErrors(e => ({...e, [k]: false})); };
-
-  const inputStyle = (k) => errors[k] ? {borderColor:'oklch(62% 0.18 15 / 0.8)',boxShadow:'0 0 0 3px oklch(62% 0.18 15 / 0.15)'} : {};
+  const set = k => ev => { setForm(f=>({...f,[k]:ev.target.value})); setErrors(e=>({...e,[k]:false})); };
+  const err = k => errors[k] ? {borderColor:'rgba(255,80,80,.7)',boxShadow:'0 0 0 3px rgba(255,80,80,.1)'} : {};
 
   return (
     <section id="contact">
-      <div className="section-inner">
-        <div className="section-header reveal">
-          <span className="section-tag">Get In Touch</span>
-          <h2>Let's Build Something Together</h2>
-          <p>Ready to modernize your operations? Tell us about your project and we'll get back to you within 24 hours.</p>
-        </div>
-        <div className="contact-grid pop-children">
-          <div className="contact-info">
-            <div className="contact-detail">
-              <div className="contact-detail-icon">✉</div>
-              <div className="contact-detail-text">
-                <strong>Email</strong>
-                <span>hello@elliumlabs.com</span>
+      <div className="wrap">
+        <div className="contact-grid pop">
+          <div className="contact-left">
+            <span className="chip">Get In Touch</span>
+            <h2>Start a Conversation</h2>
+            <p>Tell us about your project or business challenge. We'll review and respond within 24 hours with a clear plan of action.</p>
+            <div className="cdetails">
+              <div className="cdet">
+                <div className="cdet-ico">✉</div>
+                <div className="cdet-txt">
+                  <strong>Email</strong>
+                  <span><a href="mailto:elliumlabs@gmail.com">elliumlabs@gmail.com</a></span>
+                </div>
+              </div>
+              <div className="cdet">
+                <div className="cdet-ico">📍</div>
+                <div className="cdet-txt"><strong>Location</strong><span>Dhaka, Bangladesh</span></div>
+              </div>
+              <div className="cdet">
+                <div className="cdet-ico">🌐</div>
+                <div className="cdet-txt"><strong>Clients We Serve</strong><span>US · UK · Australia · Canada · Singapore</span></div>
+              </div>
+              <div className="cdet">
+                <div className="cdet-ico">⏱</div>
+                <div className="cdet-txt"><strong>Response Time</strong><span>Within 24 hours</span></div>
               </div>
             </div>
-            <div className="contact-detail">
-              <div className="contact-detail-icon">☎</div>
-              <div className="contact-detail-text">
-                <strong>Phone</strong>
-                <span>+1 (555) 000-0000</span>
-              </div>
-            </div>
-            <div className="contact-detail">
-              <div className="contact-detail-icon">◎</div>
-              <div className="contact-detail-text">
-                <strong>Office</strong>
-                <span>123 Tech Avenue, Suite 400<br/>San Francisco, CA 94105</span>
-              </div>
-            </div>
-            <div className="contact-detail">
-              <div className="contact-detail-icon">◷</div>
-              <div className="contact-detail-text">
-                <strong>Business Hours</strong>
-                <span>Mon–Fri, 9:00 AM – 6:00 PM PST</span>
-              </div>
-            </div>
-            <div style={{marginTop:'32px',padding:'24px',borderRadius:'14px',border:'1px solid var(--border)',background:'var(--bg-card)'}}>
-              <div style={{fontSize:'13px',color:'var(--text-muted)',marginBottom:'10px',fontWeight:'500'}}>Response Time</div>
-              <div style={{fontSize:'28px',fontFamily:'Outfit',fontWeight:'700',background:'linear-gradient(135deg,var(--accent),var(--accent2))',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',backgroundClip:'text'}}>{"< 24 hours"}</div>
-              <div style={{fontSize:'13px',color:'var(--text-muted)',marginTop:'6px'}}>We take every inquiry seriously.</div>
-            </div>
+            {tweaks.showCalendly && (
+              <a href="#" className="cal-btn">
+                <span style={{fontSize:'20px'}}>📅</span>
+                <div>
+                  <div style={{fontSize:'13px',fontWeight:'700'}}>Book a Discovery Call</div>
+                  <div style={{fontSize:'11px',color:'var(--text-muted)',fontWeight:'400',marginTop:'1px'}}>Calendly — link coming soon</div>
+                </div>
+              </a>
+            )}
           </div>
           <div>
             {sent ? (
-              <div className="form-success">
-                <div className="check">✓</div>
-                <h3>Message Received</h3>
-                <p>Thank you for reaching out. We'll review your message and be in touch within 24 hours.</p>
-                <button className="btn-secondary" style={{marginTop:'24px',display:'inline-block'}} onClick={() => { setSent(false); setForm({ name:'', email:'', company:'', service:'', message:'' }); }}>Send Another</button>
+              <div className="f-success">
+                <div className="f-check">✓</div>
+                <h3 style={{fontFamily:'Outfit',fontWeight:'700',fontSize:'20px',marginBottom:'8px'}}>Message Received</h3>
+                <p style={{color:'var(--text-muted)',fontSize:'14px'}}>We'll get back to you within 24 hours.</p>
+                <button className="btn-outline" style={{marginTop:'22px'}} onClick={() => { setSent(false); setForm({name:'',email:'',company:'',type:'',service:'',message:''}); }}>
+                  Send Another
+                </button>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} noValidate>
-                <div className="form-row">
-                  <div className="form-group">
+              <form onSubmit={submit} noValidate>
+                <div className="frow">
+                  <div className="fg">
                     <label>Your Name *</label>
-                    <input type="text" placeholder="John Smith" value={form.name} onChange={set('name')} style={inputStyle('name')} />
+                    <input type="text" placeholder="John Smith" value={form.name} onChange={set('name')} style={err('name')} />
                   </div>
-                  <div className="form-group">
-                    <label>Email Address *</label>
-                    <input type="email" placeholder="john@company.com" value={form.email} onChange={set('email')} style={inputStyle('email')} />
+                  <div className="fg">
+                    <label>Work Email *</label>
+                    <input type="email" placeholder="you@company.com" value={form.email} onChange={set('email')} style={err('email')} />
                   </div>
                 </div>
-                <div className="form-row">
-                  <div className="form-group">
+                <div className="frow">
+                  <div className="fg">
                     <label>Company</label>
-                    <input type="text" placeholder="Your Company" value={form.company} onChange={set('company')} />
+                    <input type="text" placeholder="Your company" value={form.company} onChange={set('company')} />
                   </div>
-                  <div className="form-group">
-                    <label>Service Interested In</label>
-                    <select value={form.service} onChange={set('service')}>
-                      <option value="">Select a service…</option>
-                      <option>Odoo ERP Implementation</option>
-                      <option>Odoo Customization & Integration</option>
-                      <option>Business Process Automation</option>
-                      <option>Web & Software Development</option>
-                      <option>IT Consulting & Support</option>
+                  <div className="fg">
+                    <label>I am a…</label>
+                    <select value={form.type} onChange={set('type')}>
+                      <option value="">Select…</option>
+                      <option>Business needing Odoo ERP</option>
+                      <option>Odoo consulting firm (partner)</option>
+                      <option>Business needing custom software</option>
+                      <option>Business needing a website</option>
                       <option>Other</option>
                     </select>
                   </div>
                 </div>
-                <div className="form-group">
-                  <label>How can we help? *</label>
-                  <textarea placeholder="Tell us about your project, goals, and timeline…" value={form.message} onChange={set('message')} style={inputStyle('message')}></textarea>
+                <div className="fg">
+                  <label>Service Interested In</label>
+                  <select value={form.service} onChange={set('service')}>
+                    <option value="">Select…</option>
+                    <option>Odoo Implementation (v16/v17/v18)</option>
+                    <option>Custom Module Development</option>
+                    <option>Migration & Upgrade</option>
+                    <option>Web Development</option>
+                    <option>BA / QA / PM Support</option>
+                    <option>Post-Live Maintenance</option>
+                    <option>White-Label Partnership</option>
+                  </select>
                 </div>
-                <button className="form-submit" type="submit" disabled={sending}>
+                <div className="fg">
+                  <label>Tell us about your project *</label>
+                  <textarea placeholder="Describe your project, goals, timeline, and any other details…" value={form.message} onChange={set('message')} style={err('message')}></textarea>
+                </div>
+                <button className="f-submit" type="submit" disabled={sending}>
                   {sending ? 'Sending…' : 'Send Message →'}
                 </button>
+                <p style={{fontSize:'11px',color:'var(--text-dim)',textAlign:'center',marginTop:'8px'}}>
+                  All conversations are confidential. We respond within 24 hours.
+                </p>
               </form>
             )}
           </div>
@@ -1347,139 +1581,103 @@ function Contact() {
   );
 }
 
-// ── FOOTER ────────────────────────────────────────────────────────────────────
+/* ── FOOTER ──────────────────────────────────────────────────────────────── */
 function Footer() {
+  const go = id => document.getElementById(id)?.scrollIntoView({behavior:'smooth'});
   return (
     <footer>
       <div className="footer-inner">
         <div className="footer-top">
           <div className="footer-brand">
-            <a className="nav-logo" href="#" style={{textDecoration:'none'}}>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 56" fill="none" height="34">
-                <defs>
-                  <linearGradient id="fg1" x1="0" y1="0" x2="56" y2="56" gradientUnits="userSpaceOnUse"><stop offset="0%" stopColor="#4a9eff"/><stop offset="100%" stopColor="#2de8c8"/></linearGradient>
-                  <linearGradient id="fg2" x1="0" y1="0" x2="56" y2="56" gradientUnits="userSpaceOnUse"><stop offset="0%" stopColor="#4a9eff" stopOpacity="0.18"/><stop offset="100%" stopColor="#2de8c8" stopOpacity="0.08"/></linearGradient>
-                </defs>
-                <rect x="1" y="1" width="54" height="54" rx="13" fill="url(#fg2)" stroke="url(#fg1)" strokeWidth="1.2" opacity="0.5"/>
-                <line x1="16" y1="14" x2="40" y2="14" stroke="url(#fg1)" strokeWidth="3.5" strokeLinecap="round"/>
-                <line x1="16" y1="28" x2="34" y2="28" stroke="url(#fg1)" strokeWidth="3.5" strokeLinecap="round"/>
-                <line x1="16" y1="42" x2="40" y2="42" stroke="url(#fg1)" strokeWidth="3.5" strokeLinecap="round"/>
-                <line x1="16" y1="14" x2="16" y2="42" stroke="url(#fg1)" strokeWidth="3.5" strokeLinecap="round"/>
-                <circle cx="40" cy="14" r="4" fill="#4a9eff" opacity="0.9"/><circle cx="40" cy="14" r="2" fill="#fff" opacity="0.9"/>
-                <circle cx="34" cy="28" r="4" fill="#38d4b0" opacity="0.9"/><circle cx="34" cy="28" r="2" fill="#fff" opacity="0.9"/>
-                <circle cx="40" cy="42" r="4" fill="#4a9eff" opacity="0.9"/><circle cx="40" cy="42" r="2" fill="#fff" opacity="0.9"/>
-                <line x1="62" y1="14" x2="62" y2="42" stroke="#4a9eff" strokeWidth="0.8" strokeOpacity="0.25"/>
-                <text x="68" y="23" fontFamily="'Outfit','Helvetica Neue',sans-serif" fontWeight="700" fontSize="19" letterSpacing="-0.5" fill="#e6eeff">Ellium</text>
-                <text x="68" y="42" fontFamily="'Outfit','Helvetica Neue',sans-serif" fontWeight="300" fontSize="13" letterSpacing="3.5" fill="#7a8daa">LABS</text>
-              </svg>
+            <img src="logo3.jpeg" alt="Ellium Labs" />
+            <p>Odoo-certified software company helping businesses worldwide implement ERP, build custom software, and scale operations. Based in Dhaka, Bangladesh.</p>
+            <a href="mailto:elliumlabs@gmail.com" style={{display:'inline-block',marginTop:'14px',color:'var(--teal-light)',fontSize:'13px',textDecoration:'none'}}>
+              elliumlabs@gmail.com
             </a>
-            <p>Your trusted technology partner for Odoo ERP implementation, software development, and IT consulting.</p>
-            <div style={{display:'flex',gap:'12px',marginTop:'20px'}}>
-              {['in','tw','gh'].map(s => (
-                <div key={s} style={{width:'34px',height:'34px',borderRadius:'8px',border:'1px solid var(--border)',display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',fontSize:'12px',color:'var(--text-muted)',fontFamily:'Outfit',fontWeight:'700',transition:'border-color 0.2s,color 0.2s'}}
-                  onMouseEnter={e=>{e.target.style.borderColor='var(--border-bright)';e.target.style.color='var(--text)'}}
-                  onMouseLeave={e=>{e.target.style.borderColor='var(--border)';e.target.style.color='var(--text-muted)'}}>
-                  {s}
-                </div>
-              ))}
-            </div>
           </div>
           <div className="footer-col">
             <h4>Services</h4>
             <ul>
-              {['ERP Implementation','Customization','Automation','Web Dev','IT Consulting'].map(l => <li key={l}><a href="#">{l}</a></li>)}
+              {['Odoo Implementation','Custom Modules','Migration & Upgrade','Web Development','BA / QA / PM','Post-Live Support'].map(l => <li key={l}><a href="#">{l}</a></li>)}
             </ul>
           </div>
           <div className="footer-col">
             <h4>Company</h4>
             <ul>
-              {['About Us','Portfolio','Case Studies','Careers','Blog'].map(l => <li key={l}><a href="#">{l}</a></li>)}
+              {[['about','About'],['cases','Case Studies'],['team','Team'],['partners','For Partners'],['contact','Contact']].map(([id,l]) => (
+                <li key={id}><a href="#" onClick={e=>{e.preventDefault();go(id);}}>{l}</a></li>
+              ))}
             </ul>
           </div>
           <div className="footer-col">
-            <h4>Legal</h4>
+            <h4>Odoo Expertise</h4>
             <ul>
-              {['Privacy Policy','Terms of Service','Cookie Policy','Sitemap'].map(l => <li key={l}><a href="#">{l}</a></li>)}
+              {['Odoo v16','Odoo v17','Odoo v18','Custom Modules','Odoo Migration','Odoo Consulting'].map(l => <li key={l}><a href="#">{l}</a></li>)}
             </ul>
           </div>
         </div>
-        <div className="footer-bottom">
-          <span>© 2026 Ellium Labs. All rights reserved.</span>
-          <span>Built with precision · Delivered with care</span>
+        <div className="footer-btm">
+          <span>© 2026 Ellium Labs. Dhaka, Bangladesh.</span>
+          <span>Odoo ERP Specialists · Software Development · White-Label Partner</span>
         </div>
       </div>
     </footer>
   );
 }
 
-// ── APP ───────────────────────────────────────────────────────────────────────
+/* ── APP ─────────────────────────────────────────────────────────────────── */
 function App() {
   const [tweaks, setTweak] = useTweaks(TWEAK_DEFAULTS);
 
-  // Reveal + pop on scroll
   useEffect(() => {
-    const selectors = '.reveal, .pop-children, .slide-left, .slide-right';
-    const els = document.querySelectorAll(selectors);
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((e) => {
-        if (e.isIntersecting) {
-          e.target.classList.add('visible');
-          // stat number flash
-          if (e.target.classList.contains('hero-stats')) {
-            e.target.querySelectorAll('.stat').forEach(s => s.classList.add('popped'));
-          }
-          io.unobserve(e.target);
-        }
-      });
-    }, { threshold: 0.10 });
+    const els = document.querySelectorAll('.reveal, .pop');
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+    }, { threshold: 0.08 });
     els.forEach(el => io.observe(el));
     return () => io.disconnect();
   }, []);
 
-  // Apply accent hue custom property
-  useEffect(() => {
-    document.documentElement.style.setProperty('--accent', `oklch(62% 0.20 ${tweaks.accentHue})`);
-    document.documentElement.style.setProperty('--accent2', `oklch(62% 0.18 ${tweaks.accentHue2})`);
-    document.documentElement.style.setProperty('--accent-glow', `oklch(62% 0.20 ${tweaks.accentHue} / 0.35)`);
-    document.documentElement.style.setProperty('--accent2-glow', `oklch(62% 0.18 ${tweaks.accentHue2} / 0.35)`);
-  }, [tweaks.accentHue, tweaks.accentHue2]);
-
   return (
     <>
-      <Nav tweaks={tweaks} setTweak={setTweak} />
+      <Nav />
       <Hero tweaks={tweaks} />
-      <div className="section-divider"></div>
+      <Ticker />
       <About />
-      <div className="section-divider"></div>
+      <div className="divider"></div>
       <Services />
-      <div className="section-divider"></div>
+      <div className="divider"></div>
+      <Partners tweaks={tweaks} />
+      <div className="divider"></div>
       <Why />
-      <div className="section-divider"></div>
-      <Portfolio />
-      <div className="section-divider"></div>
-      <Taglines />
-      <div className="section-divider"></div>
-      <Contact />
+      <div className="divider"></div>
+      <Cases />
+      <div className="divider"></div>
+      <Team />
+      <CtaBand />
+      <CalendlyBanner />
+      <Contact tweaks={tweaks} />
       <Footer />
-      <TweaksPanel>
-        <TweakSection label="Brand">
-          <TweakColor label="Accent Color" k="accentHue" tweaks={tweaks} setTweak={setTweak} isHue={true} min={0} max={360} />
-          <TweakColor label="Secondary Accent" k="accentHue2" tweaks={tweaks} setTweak={setTweak} isHue={true} min={0} max={360} />
-        </TweakSection>
+
+      {/* Floating Calendly button */}
+      <a href="#" className="cal-float">
+        <span className="cal-float-icon">📅</span>
+        Book a Call
+      </a>
+
+      <TweaksPanel title="Tweaks">
         <TweakSection label="Hero">
-          <TweakText label="Headline" value={tweaks.heroHeadline} onChange={(v) => setTweak('heroHeadline', v)} />
-          <TweakText label="Tagline" value={tweaks.tagline} onChange={(v) => setTweak('tagline', v)} />
-          <TweakToggle label="Show Stats Bar" value={tweaks.showStats} onChange={(v) => setTweak('showStats', v)} />
+          <TweakText label="Hero line 3" value={tweaks.heroLine2} onChange={v => setTweak('heroLine2', v)} />
+          <TweakToggle label="Show stats bar" value={tweaks.showStats} onChange={v => setTweak('showStats', v)} />
+        </TweakSection>
+        <TweakSection label="Partner Section">
+          <TweakText label="Section title" value={tweaks.partnerSectionTitle} onChange={v => setTweak('partnerSectionTitle', v)} />
+        </TweakSection>
+        <TweakSection label="Contact">
+          <TweakToggle label="Show Calendly button" value={tweaks.showCalendly} onChange={v => setTweak('showCalendly', v)} />
         </TweakSection>
       </TweaksPanel>
     </>
-  );
-}
-
-// Custom color hue slider as tweak control
-function TweakColor({ label, k, tweaks, setTweak, isHue, min, max }) {
-  return (
-    <TweakSlider label={label} value={tweaks[k]} min={min || 0} max={max || 360} step={1} onChange={(v) => setTweak(k, v)} />
   );
 }
 
@@ -1488,13 +1686,13 @@ ReactDOM.createRoot(document.getElementById('root')).render(<App />);
 
 <template id="__bundler_thumbnail">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80">
-    <rect width="120" height="80" fill="#030b18"/>
-    <circle cx="40" cy="35" r="18" fill="none" stroke="oklch(62% 0.20 232)" stroke-width="1.5" opacity="0.6"/>
-    <polygon points="85,20 100,45 70,45" fill="none" stroke="oklch(62% 0.18 188)" stroke-width="1.5" opacity="0.6"/>
-    <rect x="50" y="55" width="20" height="12" rx="2" fill="oklch(62% 0.20 232)" opacity="0.7"/>
-    <text x="60" y="74" text-anchor="middle" font-size="7" fill="oklch(62% 0.20 232)" opacity="0.5" font-family="sans-serif">ELLIUM</text>
+    <rect width="120" height="80" fill="#0B1F3A"/>
+    <rect x="10" y="10" width="100" height="10" rx="2" fill="rgba(2,128,144,0.35)"/>
+    <rect x="10" y="26" width="68" height="7" rx="2" fill="rgba(2,195,154,0.25)"/>
+    <rect x="10" y="40" width="28" height="5" rx="2" fill="rgba(2,128,144,0.5)"/>
+    <rect x="44" y="40" width="28" height="5" rx="2" fill="rgba(2,128,144,0.3)"/>
+    <text x="60" y="66" text-anchor="middle" font-size="7" fill="#028090" font-family="sans-serif" font-weight="700">ELLIUM LABS</text>
   </svg>
 </template>
-
 </body>
 </html>
