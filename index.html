@@ -1468,8 +1468,16 @@ function Contact({ tweaks }) {
     const e = validate();
     if (Object.keys(e).length) { setErrors(e); return; }
     setErrors({}); setSending(true);
-    await new Promise(r => setTimeout(r, 1200));
-    setSending(false); setSent(true);
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ access_key: 'b7b80245-0595-4e86-9103-65e04c36fd8e', ...form })
+      });
+      const data = await res.json();
+      if (data.success) { setSent(true); } else { alert('Something went wrong. Please try again.'); }
+    } catch { alert('Network error. Please try again.'); }
+    setSending(false);
   };
   const set = k => ev => { setForm(f=>({...f,[k]:ev.target.value})); setErrors(e=>({...e,[k]:false})); };
   const err = k => errors[k] ? {borderColor:'rgba(255,80,80,.7)',boxShadow:'0 0 0 3px rgba(255,80,80,.1)'} : {};
